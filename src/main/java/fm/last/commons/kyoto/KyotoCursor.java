@@ -16,6 +16,7 @@
 package fm.last.commons.kyoto;
 
 import java.io.Closeable;
+import java.io.IOException;
 
 /**
  * Wrapper around {@link kyotocabinet.Cursor}.
@@ -27,10 +28,11 @@ public interface KyotoCursor extends Closeable {
   /**
    * Close the cursor. This method should be called explicitly when the cursor is no longer in use.
    * 
+   * @throws IOException on failure.
    * @see kyotocabinet.Cursor#disable()
    */
   @Override
-  void close();
+  void close() throws IOException;
 
   /**
    * Accept a read-only visitor to the current record.

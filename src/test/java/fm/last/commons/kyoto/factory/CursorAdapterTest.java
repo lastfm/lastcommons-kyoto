@@ -22,6 +22,9 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+
 import kyotocabinet.Cursor;
 import kyotocabinet.Error;
 import kyotocabinet.Visitor;
@@ -33,9 +36,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import fm.last.commons.kyoto.CursorStep;
-import fm.last.commons.kyoto.ReadOnlyVisitor;
 import fm.last.commons.kyoto.KyotoCursor;
 import fm.last.commons.kyoto.KyotoException;
+import fm.last.commons.kyoto.ReadOnlyVisitor;
 import fm.last.commons.kyoto.WritableVisitor;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -76,7 +79,7 @@ public class CursorAdapterTest {
   }
 
   @Test
-  public void close() {
+  public void close() throws IOException {
     adapter.close();
     verify(mockDelegate).disable();
   }

@@ -15,11 +15,13 @@
  */
 package fm.last.commons.kyoto.factory;
 
+import java.io.IOException;
+
 import kyotocabinet.Cursor;
 import kyotocabinet.Error;
 import fm.last.commons.kyoto.CursorStep;
-import fm.last.commons.kyoto.ReadOnlyVisitor;
 import fm.last.commons.kyoto.KyotoCursor;
+import fm.last.commons.kyoto.ReadOnlyVisitor;
 import fm.last.commons.kyoto.WritableVisitor;
 import fm.last.commons.kyoto.factory.ErrorHandler.ErrorSource;
 
@@ -39,20 +41,20 @@ class CursorAdapter implements KyotoCursor {
   }
 
   @Override
-  public void close() {
+  public void close() throws IOException {
     delegate.disable();
   }
 
   @Override
   public void accept(ReadOnlyVisitor visitor, CursorStep step) {
-    errorHandler.wrapVoidCall(delegate.accept(new ReadOnlyVisitorAdapter(visitor),
-        AccessType.READ_ONLY.value(), step.value()));
+    errorHandler.wrapVoidCall(delegate.accept(new ReadOnlyVisitorAdapter(visitor), AccessType.READ_ONLY.value(),
+        step.value()));
   }
 
   @Override
   public void accept(WritableVisitor visitor, CursorStep step) {
-    errorHandler.wrapVoidCall(delegate.accept(new WritableVisitorAdapter(visitor),
-        AccessType.READ_WRITE.value(), step.value()));
+    errorHandler.wrapVoidCall(delegate.accept(new WritableVisitorAdapter(visitor), AccessType.READ_WRITE.value(),
+        step.value()));
   }
 
   @Override
