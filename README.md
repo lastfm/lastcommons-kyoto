@@ -1,6 +1,6 @@
 #About
 A better Java wrapper around the [Kyoto Cabinet](http://fallabs.com/kyotocabinet/ "Kyoto Cabinet: a straightforward implementation of DBM") library. It's great
-to able easily access kyoto-cabinet from Java, however the [default Java bindings](http://fallabs.com/kyotocabinet/javadoc/ "kyotocabinet-java Javadoc") are
+to able to easily access kyoto-cabinet from Java, however the [default Java bindings](http://fallabs.com/kyotocabinet/javadoc/ "kyotocabinet-java Javadoc") are
 missing some features we've come to expect in a modern Java developement environment. lastcommons-kyoto addresses this by wrapping the default bindings in an
 API that should be more familiar to most Java developers.
 
@@ -10,9 +10,9 @@ You can [download](https://github.com/lastfm/lastcommons-kyoto/downloads) a JAR 
 * [fm.last.commons:lastcommons-kyoto:1.0.1](http://search.maven.org/#artifactdetails%7Cfm.last.commons%lastcommons-kyoto%7C1.0.1%7Cjar)
 
 #Features
-* Cleaner, more Java-like API (when compared with [kyotocabinet-java](http://fallabs.com/kyotocabinet/javadoc/ "kyotocabinet-java Javadoc")).
+* Cleaner, more Java-like API.
 * Error conditions represented with exceptions instead of magic return values.
-* Implicit file suffix handling for the different Kyoto databases types.
+* Implicit file suffix handling for the different Kyoto database types.
 * Descriptive builder pattern for creating and validating Kyoto database configurations. 
 
 #Usage
@@ -75,7 +75,7 @@ or with Apache Commons IO:
 #Building
 This project uses the [Maven](http://maven.apache.org/) build system.
 #Further work
-We might implement a Spring [`PlatformTransactionManager`](http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/transaction/PlatformTransactionManager.html "Spring Framework Javadoc - PlatformTransactionManager") for simple intergation with Spring's transaction management framework.
+We might implement a Spring [`PlatformTransactionManager`](http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/transaction/PlatformTransactionManager.html "Spring Framework Javadoc - PlatformTransactionManager") for simple integration with Spring's transaction management framework.
 
 #Legal
 Copyright 2012 [Last.fm](http://www.last.fm/)
