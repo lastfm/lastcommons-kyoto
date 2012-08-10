@@ -37,7 +37,7 @@ public interface KyotoCursor extends Closeable {
   /**
    * Accept a read-only visitor to the current record.
    * 
-   * @param visitor a visitor object which implements the {@link #IdempotentVisitor} interface.
+   * @param visitor a visitor object which implements the {@link ReadOnlyVisitor} interface.
    * @param step {@link CursorStep#NEXT_RECORD} to move the cursor to the next record, or {@link CursorStep#NO_STEP} for
    *          no move.
    * @throws KyotoException on failure.
@@ -48,7 +48,7 @@ public interface KyotoCursor extends Closeable {
   /**
    * Accept a record mutating visitor to the current record.
    * 
-   * @param visitor a visitor object which implements the {@link #IdempotentVisitor} interface.
+   * @param visitor a visitor object which implements the {@link WritableVisitor} interface.
    * @param step {@link CursorStep#NEXT_RECORD} to move the cursor to the next record, or {@link CursorStep#NO_STEP} for
    *          no move.
    * @throws KyotoException on failure.
