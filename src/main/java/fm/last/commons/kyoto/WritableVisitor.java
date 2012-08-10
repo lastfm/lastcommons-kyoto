@@ -19,7 +19,7 @@ import kyotocabinet.Visitor;
 
 /**
  * Record visitor that can modify records. Wrapper around {@link kyotocabinet.Visitor} for the cases when methods that
- * accept visitors in {@link kyotocabinet.DB} are called with <code>'writable == true'</code>.
+ * accept visitors in {@link kyotocabinet.DB} are called with {@code 'writable == true'}.
  * 
  * @see kyotocabinet.Visitor
  */
@@ -35,7 +35,7 @@ public interface WritableVisitor {
    * 
    * @param key the record key.
    * @param value the record value.
-   * @return {@link #REMOVE} to remove the record, {@link #NOP} to leave the record unchanged, or a <code>byte[]</code>
+   * @return {@link #REMOVE} to remove the record, {@link #NOP} to leave the record unchanged, or a {@code byte[]}
    *         value to replace the current record value.
    * @see kyotocabinet.Visitor#visit_full(byte[], byte[])
    */
@@ -45,7 +45,7 @@ public interface WritableVisitor {
    * Visit an empty record.
    * 
    * @param key the record key.
-   * @return {@link #REMOVE} to remove the record, {@link #NOP} to leave the record unchanged, or a <code>byte[]</code>
+   * @return {@link #REMOVE} to remove the record, {@link #NOP} to leave the record unchanged, or a {@code byte[]}
    *         value to replace the current record value.
    * @see kyotocabinet.Visitor#visit_empty(byte[])
    */

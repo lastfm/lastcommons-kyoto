@@ -126,7 +126,7 @@ public interface KyotoDb extends Closeable {
 
   /**
    * Create a record if it does not already exist in the database. If the record already exists, the record is not
-   * modified and <code>false</code> is returned.
+   * modified and {@code false} is returned.
    * 
    * @param key the key.
    * @param value the value.
@@ -138,7 +138,7 @@ public interface KyotoDb extends Closeable {
 
   /**
    * Create a record if it does not already exist in the database. If the record already exists, the record is not
-   * modified and <code>false</code> is returned.
+   * modified and {@code false} is returned.
    * 
    * @param key the key.
    * @param value the value.
@@ -206,7 +206,7 @@ public interface KyotoDb extends Closeable {
    * @return true if the record value was changed to the new value.
    * @throws KyotoException on failure.
    * @see kyotocabinet.DB#cas(byte[], byte[], byte[])
-   * @note Take care: The documentation isn't that clear on what <code>null</code> parameters represent, or the meaning
+   * @note Take care: The documentation isn't that clear on what {@code null} parameters represent, or the meaning
    *       of the return value.
    */
   boolean compareAndSwap(byte[] key, byte[] oldValue, byte[] newValue);
@@ -220,7 +220,7 @@ public interface KyotoDb extends Closeable {
    * @return true if the record value was changed to the new value.
    * @throws KyotoException on failure.
    * @see kyotocabinet.DB#cas(byte[], byte[], byte[])
-   * @note Take care: The documentation isn't that clear on what <code>null</code> parameters represent, or the meaning
+   * @note Take care: The documentation isn't that clear on what {@code null} parameters represent, or the meaning
    *       of the return value.
    */
   boolean compareAndSwap(String key, String oldValue, String newValue);
@@ -322,7 +322,7 @@ public interface KyotoDb extends Closeable {
   /**
    * The underlying database file.
    * 
-   * @return The {@link File} where this database is stored, or <code>null</code> if the {@link DbType} does not require
+   * @return The {@link File} where this database is stored, or {@code null} if the {@link DbType} does not require
    *         file system storage.
    * @see kyotocabinet.DB#path()
    */
@@ -626,7 +626,7 @@ public interface KyotoDb extends Closeable {
    * Synchronize the database file with the underlying storage device.
    * 
    * @param synchronization The {@link Synchronization} semantics.
-   * @param fileProcessor A post processor that implements {@link KyotoFileProcessor} or <code>null</code> if no
+   * @param fileProcessor A post processor that implements {@link KyotoFileProcessor} or {@code null} if no
    *          post-processing is required.
    * @throws KyotoException on failure.
    * @see kyotocabinet.DB#synchronize(boolean, kyotocabinet.FileProcessor)

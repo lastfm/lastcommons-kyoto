@@ -17,7 +17,7 @@ package fm.last.commons.kyoto;
 
 /**
  * Record visitor that cannot modify records. Wrapper around {@link kyotocabinet.Visitor} for the cases when methods
- * that accept visitors in {@link kyotocabinet.DB} are called with <code>'writable == false'</code>.
+ * that accept visitors in {@link kyotocabinet.DB} are called with {@code 'writable == false'}.
  * 
  * @see kyotocabinet.Visitor
  */

@@ -91,7 +91,7 @@ public interface KyotoCursor extends Closeable {
    * 
    * @param step {@link CursorStep#NEXT_RECORD} to move the cursor to the next record, or {@link CursorStep#NO_STEP} to
    *          remain at the same location.
-   * @return the value of the current record or <code>null</code> if the cursor is invalid.
+   * @return the value of the current record or {@code null} if the cursor is invalid.
    * @throws KyotoException on failure.
    * @see kyotocabinet.Cursor#get_key(boolean)
    */
@@ -102,7 +102,7 @@ public interface KyotoCursor extends Closeable {
    * 
    * @param step {@link CursorStep#NEXT_RECORD} to move the cursor to the next record, or {@link CursorStep#NO_STEP} to
    *          remain at the same location.
-   * @return the value of the current record or <code>null</code> if the cursor is invalid.
+   * @return the value of the current record or {@code null} if the cursor is invalid.
    * @throws KyotoException on failure.
    * @see kyotocabinet.Cursor#get_key_str(boolean)
    */
@@ -113,7 +113,7 @@ public interface KyotoCursor extends Closeable {
    * 
    * @param step {@link CursorStep#NEXT_RECORD} to move the cursor to the next record, or {@link CursorStep#NO_STEP} to
    *          remain at the same location.
-   * @return the value of the current record or <code>null</code> if the cursor is invalid.
+   * @return the value of the current record or {@code null} if the cursor is invalid.
    * @throws KyotoException on failure.
    * @see kyotocabinet.Cursor#get_value(boolean)
    */
@@ -124,7 +124,7 @@ public interface KyotoCursor extends Closeable {
    * 
    * @param step {@link CursorStep#NEXT_RECORD} to move the cursor to the next record, or {@link CursorStep#NO_STEP} to
    *          remain at the same location.
-   * @return the value of the current record or <code>null</code> if the cursor is invalid.
+   * @return the value of the current record or {@code null} if the cursor is invalid.
    * @throws KyotoException on failure.
    * @see kyotocabinet.Cursor#get_value_str(boolean)
    */
@@ -135,7 +135,7 @@ public interface KyotoCursor extends Closeable {
    * 
    * @param step {@link CursorStep#NEXT_RECORD} to move the cursor to the next record, or {@link CursorStep#NO_STEP} to
    *          remain at the same location.
-   * @return a pair of the key and the value of the current record or <code>null</code> if the cursor is invalid.
+   * @return a pair of the key and the value of the current record or {@code null} if the cursor is invalid.
    * @throws KyotoException on failure.
    * @see kyotocabinet.Cursor#get(boolean)
    */
@@ -146,7 +146,7 @@ public interface KyotoCursor extends Closeable {
    * 
    * @param step {@link CursorStep#NEXT_RECORD} to move the cursor to the next record, or {@link CursorStep#NO_STEP} to
    *          remain at the same location.
-   * @return a pair of the key and the value of the current record or <code>null</code> if the cursor is invalid.
+   * @return a pair of the key and the value of the current record or {@code null} if the cursor is invalid.
    * @throws KyotoException on failure.
    * @see kyotocabinet.Cursor#get_str(boolean)
    */

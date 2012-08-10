@@ -23,8 +23,6 @@ You can [download](https://github.com/lastfm/lastcommons-kyoto/downloads) a JAR 
                          .compressor(LZO)
                          .build();
           db.open();
-          // Do stuff
-          IOUtils.closeQuietly(db); // from Apache Commons IO
 ####Create a new cache tree database:
           KyotoDb db = new KyotoDbBuilder(CACHE_TREE).build();
 ####Open an existing file tree database:
@@ -32,13 +30,24 @@ You can [download](https://github.com/lastfm/lastcommons-kyoto/downloads) a JAR 
                          .modes(READ_ONLY)
                          .memoryMapSizeFromFile()
                          .build();
+####Resources implement `java.io.Closeable`
+With Java 7:
+
+          try (KyotoCursor cursor = db.cursor()) {
+            ...
+          } catch (IOException e) {
+            ...
+          }
+or with Apache Commons IO:
+
+          IOUtils.closeQuietly(db); // from Apache Commons IO
 ####Work with exceptions - not error codes
           try {
             db.append(key, value); // returns void
           } catch (KyotoException e) {
             // You decide what happens next!
           }
-####Transaction management
+####Clearer transaction management
           try {
             db.begin(Synchronization.PHYSICAL);
             // Do stuff
@@ -49,6 +58,7 @@ You can [download](https://github.com/lastfm/lastcommons-kyoto/downloads) a JAR 
 ####Return values represent outcomes, not errors
           boolean recordAlreadyExists = db.putIfAbsent("myKey", "myValue");
           long removed = db.remove(keys, ATOMIC);
+          long records = db.recordCount() // Never Long.MIN_VALUE, never < 0
 ####Validation of Kyoto database configuration
           File dbFile = FILE_HASH.newFile(parent, "an-existing-db");          
           KyotoDb db = new KyotoDbBuilder(dbFile)

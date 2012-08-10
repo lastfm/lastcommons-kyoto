@@ -25,9 +25,9 @@ import java.util.Map;
  * The database type.
  */
 public enum DbType {
-  /** Prototype hash database - in-memory database implemented with <code>std::unorderd_map</code> */
+  /** Prototype hash database - in-memory database implemented with {@code std::unorderd_map} */
   PROTOTYPE_HASH(StorageType.MEMORY, "-"),
-  /** Prototype tree database - in-memory database implemented with <code>std::map</code>. */
+  /** Prototype tree database - in-memory database implemented with {@code std::map}. */
   PROTOTYPE_TREE(StorageType.MEMORY, "+"),
   /** Stash database - in-memory database with an optimized memory footprint. */
   STASH(StorageType.MEMORY, ":"),
