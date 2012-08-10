@@ -5,8 +5,8 @@ to be able to easily access kyoto-cabinet from Java, however the [default Java b
 #Start using
 You can [download](https://github.com/lastfm/lastcommons-kyoto/downloads) a JAR file or obtain lastcommons-kyoto from Maven Central using the following identifier:
 
-* [fm.last.commons:lastcommons-kyoto:1.0.1](http://search.maven.org/#artifactdetails%7Cfm.last.commons%lastcommons-kyoto%7C1.0.1%7Cjar)
-
+* [fm.last.commons:lastcommons-kyoto:1.0.1](http://search.maven.org/#artifactdetails%7Cfm.last.commons%7Clastcommons-kyoto%7C1.0.1%7Cjar)
+                                            
 #Features
 * Cleaner, more Java-like API.
 * Error conditions represented with exceptions instead of magic return values.
