@@ -1,5 +1,8 @@
 #About
-A better Java wrapper around the [Kyoto Cabinet](http://fallabs.com/kyotocabinet/ "Kyoto Cabinet: a straightforward implementation of DBM") library.
+A better Java wrapper around the [Kyoto Cabinet](http://fallabs.com/kyotocabinet/ "Kyoto Cabinet: a straightforward implementation of DBM") library. It's great
+to able easily access kyoto-cabinet from Java, however the [default Java bindings](http://fallabs.com/kyotocabinet/javadoc/ "kyotocabinet-java Javadoc") are
+missing some features we've come to expect in a modern Java developement environment. lastcommons-kyoto addresses this by wrapping the default bindings in an
+API that should be more familiar to most Java developers.
 
 #Start using
 You can [download](https://github.com/lastfm/lastcommons-kyoto/downloads) a JAR file or obtain lastcommons-kyoto from Maven Central using the following identifier:
