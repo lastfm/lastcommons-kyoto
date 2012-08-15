@@ -34,9 +34,9 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import fm.last.commons.kyoto.DbType;
-import fm.last.commons.kyoto.ReadOnlyVisitor;
 import fm.last.commons.kyoto.KyotoDb;
 import fm.last.commons.kyoto.KyotoException;
+import fm.last.commons.kyoto.ReadOnlyVisitor;
 import fm.last.commons.test.file.TemporaryFolder;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -78,7 +78,7 @@ public class KyotoDbImplTest {
     assertThat(db.close(), is(false));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test(expected = IOException.class)
   public void closeFail() throws IOException {
     File file = temporaryFolder.newFile("KyotoDbImplTest-closeFail.kch");
     db = new DB();

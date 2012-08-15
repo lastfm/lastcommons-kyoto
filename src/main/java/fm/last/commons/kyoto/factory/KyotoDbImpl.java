@@ -28,15 +28,15 @@ import kyotocabinet.Error;
 import kyotocabinet.FileProcessor;
 import fm.last.commons.kyoto.Atomicity;
 import fm.last.commons.kyoto.DbType;
-import fm.last.commons.kyoto.ReadOnlyVisitor;
-import fm.last.commons.kyoto.ReadOnlyStringVisitor;
 import fm.last.commons.kyoto.KyotoCursor;
 import fm.last.commons.kyoto.KyotoDb;
 import fm.last.commons.kyoto.KyotoFileProcessor;
 import fm.last.commons.kyoto.MergeType;
-import fm.last.commons.kyoto.WritableVisitor;
-import fm.last.commons.kyoto.WritableStringVisitor;
+import fm.last.commons.kyoto.ReadOnlyStringVisitor;
+import fm.last.commons.kyoto.ReadOnlyVisitor;
 import fm.last.commons.kyoto.Synchronization;
+import fm.last.commons.kyoto.WritableStringVisitor;
+import fm.last.commons.kyoto.WritableVisitor;
 import fm.last.commons.kyoto.factory.ErrorHandler.ErrorSource;
 
 class KyotoDbImpl implements KyotoDb {
@@ -68,8 +68,7 @@ class KyotoDbImpl implements KyotoDb {
 
   @Override
   public void accept(byte[] key, ReadOnlyVisitor visitor) {
-    errorHandler.wrapVoidCall(delegate.accept(key, new ReadOnlyVisitorAdapter(visitor),
-        AccessType.READ_ONLY.value()));
+    errorHandler.wrapVoidCall(delegate.accept(key, new ReadOnlyVisitorAdapter(visitor), AccessType.READ_ONLY.value()));
   }
 
   @Override
@@ -80,8 +79,8 @@ class KyotoDbImpl implements KyotoDb {
 
   @Override
   public void accept(String key, ReadOnlyStringVisitor visitor) {
-    errorHandler.wrapVoidCall(delegate.accept(stringToByteArray(key),
-        new ReadOnlyStringVisitorAdapter(visitor, this), AccessType.READ_ONLY.value()));
+    errorHandler.wrapVoidCall(delegate.accept(stringToByteArray(key), new ReadOnlyStringVisitorAdapter(visitor, this),
+        AccessType.READ_ONLY.value()));
   }
 
   @Override
@@ -92,8 +91,7 @@ class KyotoDbImpl implements KyotoDb {
 
   @Override
   public void accept(byte[] key, WritableVisitor visitor) {
-    errorHandler.wrapVoidCall(delegate.accept(key, new WritableVisitorAdapter(visitor),
-        AccessType.READ_WRITE.value()));
+    errorHandler.wrapVoidCall(delegate.accept(key, new WritableVisitorAdapter(visitor), AccessType.READ_WRITE.value()));
   }
 
   @Override
@@ -148,7 +146,7 @@ class KyotoDbImpl implements KyotoDb {
   @Override
   public synchronized void close() throws IOException {
     if (!open) {
-      throw new IllegalStateException("Connection already closed: " + this);
+      throw new IOException("Connection already closed: " + this);
     }
     errorHandler.wrapVoidIoCall(delegate.close(), "Could not close db: " + descriptor);
     open = false;
@@ -248,8 +246,7 @@ class KyotoDbImpl implements KyotoDb {
 
   @Override
   public void iterate(ReadOnlyVisitor visitor) {
-    errorHandler.wrapVoidCall(delegate.iterate(new ReadOnlyVisitorAdapter(visitor),
-        AccessType.READ_ONLY.value()));
+    errorHandler.wrapVoidCall(delegate.iterate(new ReadOnlyVisitorAdapter(visitor), AccessType.READ_ONLY.value()));
   }
 
   @Override
@@ -260,8 +257,7 @@ class KyotoDbImpl implements KyotoDb {
 
   @Override
   public void iterate(WritableVisitor visitor) {
-    errorHandler.wrapVoidCall(delegate.iterate(new WritableVisitorAdapter(visitor),
-        AccessType.READ_WRITE.value()));
+    errorHandler.wrapVoidCall(delegate.iterate(new WritableVisitorAdapter(visitor), AccessType.READ_WRITE.value()));
   }
 
   @Override
