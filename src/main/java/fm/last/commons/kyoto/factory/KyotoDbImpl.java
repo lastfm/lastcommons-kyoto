@@ -62,84 +62,103 @@ class KyotoDbImpl implements KyotoDb {
         return delegate.error();
       }
     });
-    open = false;
+    if (delegate.count() != -1) {
+      // We do this only to facilitate testing
+      open = true;
+    } else {
+      open = false;
+    }
     encoding = "UTF-8";
   }
 
   @Override
   public void accept(byte[] key, ReadOnlyVisitor visitor) {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.accept(key, new ReadOnlyVisitorAdapter(visitor), AccessType.READ_ONLY.value()));
   }
 
   @Override
   public void accept(byte[][] keys, ReadOnlyVisitor visitor) {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.accept_bulk(keys, new ReadOnlyVisitorAdapter(visitor),
         AccessType.READ_ONLY.value()));
   }
 
   @Override
   public void accept(String key, ReadOnlyStringVisitor visitor) {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.accept(stringToByteArray(key), new ReadOnlyStringVisitorAdapter(visitor, this),
         AccessType.READ_ONLY.value()));
   }
 
   @Override
   public void accept(List<String> keys, ReadOnlyStringVisitor visitor) {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.accept_bulk(stringListTo2DByteArray(keys), new ReadOnlyStringVisitorAdapter(
         visitor, this), AccessType.READ_ONLY.value()));
   }
 
   @Override
   public void accept(byte[] key, WritableVisitor visitor) {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.accept(key, new WritableVisitorAdapter(visitor), AccessType.READ_WRITE.value()));
   }
 
   @Override
   public void accept(byte[][] keys, WritableVisitor visitor) {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.accept_bulk(keys, new WritableVisitorAdapter(visitor),
         AccessType.READ_WRITE.value()));
   }
 
   @Override
   public void accept(String key, WritableStringVisitor visitor) {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.accept(stringToByteArray(key), new WritableStringVisitorAdapter(visitor, this),
         AccessType.READ_WRITE.value()));
   }
 
   @Override
   public void accept(List<String> keys, WritableStringVisitor visitor) {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.accept_bulk(stringListTo2DByteArray(keys), new WritableStringVisitorAdapter(
         visitor, this), AccessType.READ_WRITE.value()));
   }
 
   @Override
   public boolean putIfAbsent(byte[] key, byte[] value) {
+    checkDbIsOpen();
     return errorHandler.wrapBooleanCall(delegate.add(key, value));
   }
 
   @Override
   public boolean putIfAbsent(String key, String value) {
+    checkDbIsOpen();
     return errorHandler.wrapBooleanCall(delegate.add(key, value));
   }
 
   @Override
   public void append(byte[] key, byte[] value) {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.append(key, value));
   }
 
   @Override
   public void append(String key, String value) {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.append(key, value));
   }
 
   @Override
   public void begin(Synchronization synchronization) {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.begin_transaction(synchronization.value()),
         "Could not begin transaction with synchronization: " + synchronization);
   }
 
   @Override
   public void clear() {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.clear());
   }
 
@@ -154,63 +173,75 @@ class KyotoDbImpl implements KyotoDb {
 
   @Override
   public boolean compareAndSwap(byte[] key, byte[] oldValue, byte[] newValue) {
+    checkDbIsOpen();
     return errorHandler.wrapBooleanCall(delegate.cas(key, oldValue, newValue));
   }
 
   @Override
   public boolean compareAndSwap(String key, String oldValue, String newValue) {
+    checkDbIsOpen();
     return errorHandler.wrapBooleanCall(delegate.cas(key, oldValue, newValue));
   }
 
   @Override
   public void copyTo(File destination) throws IOException {
+    checkDbIsOpen();
     errorHandler.wrapVoidIoCall(delegate.copy(destination.getAbsolutePath()),
         "Could not copy db to " + destination.getAbsolutePath());
   }
 
   @Override
   public long recordCount() {
+    checkDbIsOpen();
     return errorHandler.wrapLongCall(delegate.count(), -1);
   }
 
   @Override
   public KyotoCursor cursor() {
-    return new CursorAdapter(delegate.cursor());
+    checkDbIsOpen();
+    return new CursorAdapter(delegate.cursor(), this);
   }
 
   @Override
   public void dumpSnapshotTo(File destination) throws IOException {
+    checkDbIsOpen();
     errorHandler.wrapVoidIoCall(!delegate.dump_snapshot(destination.getAbsolutePath()), "Could not dump to snapshot: "
         + destination.getAbsolutePath());
   }
 
   @Override
   public void commit() {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.end_transaction(true), "Could not commit transaction");
   }
 
   @Override
   public void rollback() {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.end_transaction(false), "Could not rollback transaction");
   }
 
   @Override
   public byte[] get(byte[] key) {
+    checkDbIsOpen();
     return errorHandler.wrapObjectCall(delegate.get(key));
   }
 
   @Override
   public byte[][] get(byte[][] keys, Atomicity atomicity) {
+    checkDbIsOpen();
     return errorHandler.wrapObjectCall(delegate.get_bulk(keys, atomicity.value()));
   }
 
   @Override
   public Map<String, String> get(List<String> keys, Atomicity atomicity) {
+    checkDbIsOpen();
     return errorHandler.wrapObjectCall(delegate.get_bulk(keys, atomicity.value()));
   }
 
   @Override
   public String get(String key) {
+    checkDbIsOpen();
     return errorHandler.wrapObjectCall(delegate.get(key));
   }
 
@@ -226,74 +257,88 @@ class KyotoDbImpl implements KyotoDb {
 
   @Override
   public double increment(byte[] key, double delta) {
+    checkDbIsOpen();
     return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta), Double.NaN);
   }
 
   @Override
   public long increment(byte[] key, long delta) {
+    checkDbIsOpen();
     return errorHandler.wrapLongCall(delegate.increment(key, delta), Long.MIN_VALUE);
   }
 
   @Override
   public double increment(String key, double delta) {
+    checkDbIsOpen();
     return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta), Double.NaN);
   }
 
   @Override
   public long increment(String key, long delta) {
+    checkDbIsOpen();
     return errorHandler.wrapLongCall(delegate.increment(key, delta), Long.MIN_VALUE);
   }
 
   @Override
   public void iterate(ReadOnlyVisitor visitor) {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.iterate(new ReadOnlyVisitorAdapter(visitor), AccessType.READ_ONLY.value()));
   }
 
   @Override
   public void iterate(ReadOnlyStringVisitor visitor) {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.iterate(new ReadOnlyStringVisitorAdapter(visitor, this),
         AccessType.READ_ONLY.value()));
   }
 
   @Override
   public void iterate(WritableVisitor visitor) {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.iterate(new WritableVisitorAdapter(visitor), AccessType.READ_WRITE.value()));
   }
 
   @Override
   public void iterate(WritableStringVisitor visitor) {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.iterate(new WritableStringVisitorAdapter(visitor, this),
         AccessType.READ_WRITE.value()));
   }
 
   @Override
   public void loadSnapshotFrom(File source) throws IOException {
+    checkDbIsOpen();
     errorHandler.wrapVoidIoCall(delegate.load_snapshot(source.getAbsolutePath()), "Could not load snapshot from: "
         + source.getAbsolutePath());
   }
 
   @Override
   public List<String> matchKeysByPrefix(String prefix, long limit) {
+    checkDbIsOpen();
     return errorHandler.wrapObjectCall(delegate.match_prefix(prefix, limit));
   }
 
   @Override
   public List<String> matchKeysByPrefix(String prefix) {
+    checkDbIsOpen();
     return errorHandler.wrapObjectCall(delegate.match_prefix(prefix, NO_LIMIT));
   }
 
   @Override
   public List<String> matchKeysByRegex(String regex, long limit) {
+    checkDbIsOpen();
     return errorHandler.wrapObjectCall(delegate.match_regex(regex, limit));
   }
 
   @Override
   public List<String> matchKeysByRegex(String regex) {
+    checkDbIsOpen();
     return errorHandler.wrapObjectCall(delegate.match_regex(regex, NO_LIMIT));
   }
 
   @Override
   public void mergeWith(MergeType mergeType, KyotoDb... dbs) {
+    checkDbIsOpen();
     DB[] internal = new DB[dbs.length];
     for (int index = 0; index < dbs.length; index++) {
       internal[index] = ((KyotoDbImpl) dbs[index]).getDelegate();
@@ -314,51 +359,61 @@ class KyotoDbImpl implements KyotoDb {
 
   @Override
   public boolean remove(byte[] key) {
+    checkDbIsOpen();
     return errorHandler.wrapBooleanCall(delegate.remove(key));
   }
 
   @Override
   public long remove(byte[][] keys, Atomicity atomicity) {
+    checkDbIsOpen();
     return errorHandler.wrapLongCall(delegate.remove_bulk(keys, atomicity.value()), -1);
   }
 
   @Override
   public long remove(List<String> keys, Atomicity atomicity) {
+    checkDbIsOpen();
     return errorHandler.wrapLongCall(delegate.remove_bulk(keys, atomicity.value()), -1);
   }
 
   @Override
   public boolean remove(String key) {
+    checkDbIsOpen();
     return errorHandler.wrapBooleanCall(delegate.remove(key));
   }
 
   @Override
   public boolean replace(byte[] key, byte[] newValue) {
+    checkDbIsOpen();
     return errorHandler.wrapBooleanCall(delegate.replace(key, newValue));
   }
 
   @Override
   public boolean replace(String key, String newValue) {
+    checkDbIsOpen();
     return errorHandler.wrapBooleanCall(delegate.replace(key, newValue));
   }
 
   @Override
   public void set(byte[] key, byte[] value) {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.set(key, value));
   }
 
   @Override
   public long set(byte[][] keyValues, Atomicity atomicity) {
+    checkDbIsOpen();
     return errorHandler.wrapLongCall(delegate.set_bulk(keyValues, atomicity.value()), -1);
   }
 
   @Override
   public long set(Map<String, String> keyValues, Atomicity atomicity) {
+    checkDbIsOpen();
     return errorHandler.wrapLongCall(delegate.set_bulk(keyValues, atomicity.value()), -1);
   }
 
   @Override
   public void set(String key, String value) {
+    checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.set(key, value));
   }
 
@@ -499,6 +554,12 @@ class KyotoDbImpl implements KyotoDb {
       mask |= mode.value();
     }
     return mask;
+  }
+
+  void checkDbIsOpen() {
+    if (!open) {
+      throw new IllegalStateException("Database is not open: " + this);
+    }
   }
 
 }

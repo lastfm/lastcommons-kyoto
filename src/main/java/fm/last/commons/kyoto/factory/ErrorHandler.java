@@ -87,13 +87,21 @@ class ErrorHandler {
       ErrorType errorType = ErrorType.valueOf(error);
       if (errorType == null) {
         throw new KyotoException(new UnexpectedException("Unrecognized error code: " + error.code() + " : "
-            + error.getMessage()));
+            + getErrorMessage(error)));
       }
       Throwable toThrow = errorType.newException(error);
       if (toThrow != null) {
         throw new KyotoException(toThrow);
       }
     }
+  }
+
+  private String getErrorMessage(Error error) {
+    String message = error.getMessage();
+    if (message == null) {
+      message = "null - (this is often due to the database being closed)";
+    }
+    return message;
   }
 
   void processIoError(String message) throws IOException {
@@ -104,7 +112,7 @@ class ErrorHandler {
       ErrorType errorType = ErrorType.valueOf(error);
       if (errorType == null) {
         throw new KyotoException(message, new UnexpectedException("Unrecognized error code: " + error.code() + " : "
-            + error.getMessage()));
+            + getErrorMessage(error)));
       }
       Throwable toThrow = errorType.newException(error);
       if (toThrow != null) {
@@ -124,7 +132,7 @@ class ErrorHandler {
       ErrorType errorType = ErrorType.valueOf(error);
       if (errorType == null) {
         throw new KyotoException(message, new UnexpectedException("Unrecognized error code: " + error.code() + " : "
-            + error.getMessage()));
+            + getErrorMessage(error)));
       }
       Throwable toThrow = errorType.newException(error);
       if (toThrow != null) {

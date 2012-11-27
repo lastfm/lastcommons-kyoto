@@ -16,6 +16,7 @@
 package fm.last.commons.kyoto.factory;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
@@ -115,6 +116,11 @@ public class KyotoDbImplTest {
     assertThat(wasAbsent, is(true));
     wasAbsent = kyotoDb.putIfAbsent(BYTE_ARRAY_VALUE, BYTE_ARRAY_VALUE);
     assertThat(wasAbsent, is(false));
+  }
+
+  @Test
+  public void getNull() {
+    assertThat(kyotoDb.get("DOESNOTEXIST"), is(nullValue()));
   }
 
   @Test(expected = KyotoException.class)

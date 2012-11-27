@@ -55,12 +55,14 @@ public class CursorAdapterTest {
   private ReadOnlyVisitor mockIdempotentVisitor;
   @Mock
   private WritableVisitor mockMutatingVisitor;
+  @Mock
+  private KyotoDbImpl mockDb;
 
   private KyotoCursor adapter;
 
   @Before
   public void setup() {
-    adapter = new CursorAdapter(mockDelegate);
+    adapter = new CursorAdapter(mockDelegate, mockDb);
     when(mockDelegate.error()).thenReturn(new Error(Error.SYSTEM, ""));
     when(mockDelegate.accept(any(Visitor.class), anyBoolean(), anyBoolean())).thenReturn(true);
     when(mockDelegate.set_value(any(byte[].class), anyBoolean())).thenReturn(true);

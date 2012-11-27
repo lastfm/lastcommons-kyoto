@@ -33,6 +33,7 @@ import static fm.last.commons.kyoto.factory.Argument.PAGE_COMPARATOR;
 import static fm.last.commons.kyoto.factory.Argument.PAGE_SIZE;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Map;
@@ -148,6 +149,19 @@ public class KyotoDbBuilder {
       modes });
     DB delegate = dbFactory.newDb();
     KyotoDb db = new KyotoDbImpl(dbType, delegate, descriptor, modes, file);
+    return db;
+  }
+
+  /**
+   * Builds and opens the {@link KyotoDb} described by this builder.
+   * 
+   * @return an open {@link KyotoDb}.
+   * @throws IOException on failure.
+   * @see kyotocabinet.DB#open(String, int)
+   */
+  public final KyotoDb buildAndOpen() throws IOException {
+    KyotoDb db = build();
+    db.open();
     return db;
   }
 

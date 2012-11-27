@@ -29,9 +29,11 @@ class CursorAdapter implements KyotoCursor {
 
   private final Cursor delegate;
   private final ErrorHandler errorHandler;
+  private final KyotoDbImpl kyotoDb;
 
-  CursorAdapter(final Cursor delegate) {
+  CursorAdapter(final Cursor delegate, KyotoDbImpl kyotoDb) {
     this.delegate = delegate;
+    this.kyotoDb = kyotoDb;
     errorHandler = new ErrorHandler(new ErrorSource() {
       @Override
       public Error getError() {
@@ -47,98 +49,117 @@ class CursorAdapter implements KyotoCursor {
 
   @Override
   public void accept(ReadOnlyVisitor visitor, CursorStep step) {
+    kyotoDb.checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.accept(new ReadOnlyVisitorAdapter(visitor), AccessType.READ_ONLY.value(),
         step.value()));
   }
 
   @Override
   public void accept(WritableVisitor visitor, CursorStep step) {
+    kyotoDb.checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.accept(new WritableVisitorAdapter(visitor), AccessType.READ_WRITE.value(),
         step.value()));
   }
 
   @Override
   public void setValue(byte[] value, CursorStep step) {
+    kyotoDb.checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.set_value(value, step.value()));
   }
 
   @Override
   public void setValue(String value, CursorStep step) {
+    kyotoDb.checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.set_value(value, step.value()));
   }
 
   @Override
   public void remove() {
+    kyotoDb.checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.remove());
   }
 
   @Override
   public byte[] getKey(CursorStep step) {
+    kyotoDb.checkDbIsOpen();
     return errorHandler.wrapObjectCall(delegate.get_key(step.value()));
   }
 
   @Override
   public String getKeyAsString(CursorStep step) {
+    kyotoDb.checkDbIsOpen();
     return errorHandler.wrapObjectCall(delegate.get_key_str(step.value()));
   }
 
   @Override
   public byte[] getValue(CursorStep step) {
+    kyotoDb.checkDbIsOpen();
     return errorHandler.wrapObjectCall(delegate.get_value(step.value()));
   }
 
   @Override
   public String getValueAsString(CursorStep step) {
+    kyotoDb.checkDbIsOpen();
     return errorHandler.wrapObjectCall(delegate.get_value_str(step.value()));
   }
 
   @Override
   public byte[][] getEntry(CursorStep step) {
+    kyotoDb.checkDbIsOpen();
     return errorHandler.wrapObjectCall(delegate.get(step.value()));
   }
 
   @Override
   public String[] getEntryAsString(CursorStep step) {
+    kyotoDb.checkDbIsOpen();
     return errorHandler.wrapObjectCall(delegate.get_str(step.value()));
   }
 
   @Override
   public void scanForwardFromStart() {
+    kyotoDb.checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.jump());
   }
 
   @Override
   public void scanForwardFromKey(byte[] key) {
+    kyotoDb.checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.jump(key));
   }
 
   @Override
   public void scanForwardFromKey(String key) {
+    kyotoDb.checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.jump(key));
   }
 
   @Override
   public void scanBackwardsFromEnd() {
+    kyotoDb.checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.jump_back());
   }
 
   @Override
   public void scanBackwardsFromKey(byte[] key) {
+    kyotoDb.checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.jump_back(key));
   }
 
   @Override
   public void scanBackwardsFromKey(String key) {
+    kyotoDb.checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.jump_back(key));
   }
 
   @Override
   public void stepForwards() {
+    kyotoDb.checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.step());
   }
 
   @Override
   public void stepBackwards() {
+    kyotoDb.checkDbIsOpen();
     errorHandler.wrapVoidCall(delegate.step_back());
   }
 
