@@ -633,6 +633,10 @@ class KyotoDbImpl implements KyotoDb {
     return delegate;
   }
 
+  ErrorHandler getErrorHandler() {
+    return errorHandler;
+  }
+
   String byteArrayToString(byte[] value) {
     if (value == null) {
       return null;
