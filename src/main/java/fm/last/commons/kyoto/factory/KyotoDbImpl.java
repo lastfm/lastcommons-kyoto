@@ -31,6 +31,7 @@ import kyotocabinet.Error;
 import kyotocabinet.FileProcessor;
 import fm.last.commons.kyoto.AccessType;
 import fm.last.commons.kyoto.Atomicity;
+import fm.last.commons.kyoto.Charset;
 import fm.last.commons.kyoto.DbType;
 import fm.last.commons.kyoto.KyotoCursor;
 import fm.last.commons.kyoto.KyotoDb;
@@ -387,18 +388,20 @@ class KyotoDbImpl implements KyotoDb {
   }
 
   @Override
-  public List<String> matchKeysByLevenshtein(String query, long maxLevenshteinDistance, boolean utf) {
+  public List<String> matchKeysByLevenshtein(String query, long maxLevenshteinDistance, Charset keyCharset) {
     checkDbIsOpen();
-    return errorHandler.wrapObjectCall(delegate.match_similar(query, maxLevenshteinDistance, utf, NO_LIMIT));
+    return errorHandler.wrapObjectCall(delegate.match_similar(query, maxLevenshteinDistance, keyCharset.value(),
+        NO_LIMIT));
   }
 
   @Override
-  public List<String> matchKeysByLevenshtein(String query, long maxLevenshteinDistance, boolean utf, long limit) {
+  public List<String> matchKeysByLevenshtein(String query, long maxLevenshteinDistance, Charset keyCharset, long limit) {
     if (limit < 1) {
       throw new IllegalArgumentException("limit must be > 0");
     }
     checkDbIsOpen();
-    return errorHandler.wrapObjectCall(delegate.match_similar(query, maxLevenshteinDistance, utf, limit));
+    return errorHandler
+        .wrapObjectCall(delegate.match_similar(query, maxLevenshteinDistance, keyCharset.value(), limit));
   }
 
   @Override

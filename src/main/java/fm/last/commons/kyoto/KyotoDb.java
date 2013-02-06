@@ -32,7 +32,7 @@ public interface KyotoDb extends Closeable {
 
   /**
    * Specifies no limit for the number of results returned from {@link #matchKeysByPrefix(String, long)},
-   * {@link #matchKeysByRegex(String, long)},{@link #matchKeysByLevenshtein(String, long, boolean)},
+   * {@link #matchKeysByRegex(String, long)}, {@link #matchKeysByLevenshtein(String, long, boolean)},
    * {@link #matchKeysByLevenshtein(String, long, boolean, long)}.
    */
   public static final int NO_LIMIT = -1;
@@ -113,30 +113,30 @@ public interface KyotoDb extends Closeable {
 
   /**
    * Get all keys similar to a query string in terms of the <a
-   * href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein distance</a>.
+   * href="http://en.wikipedia.org/wiki/Levenshtein_distance">Levenshtein distance</a>.
    * 
    * @param query The query string.
    * @param maxLevenshteinDistance The maximum distance of keys to adopt.
-   * @param utf Flag to treat keys as UTF-8 strings.
+   * @param keyCharset The character encoding of the keys and query string.
    * @return a list of matching keys, or {@code null} if there were no matches.
    * @throws KyotoException on failure.
    * @see kyotocabinet.DB#match_similar(String, long, boolean, long)
    */
-  public List<String> matchKeysByLevenshtein(String query, long maxLevenshteinDistance, boolean utf);
+  public List<String> matchKeysByLevenshtein(String query, long maxLevenshteinDistance, Charset keyCharset);
 
   /**
    * Get a bounded list of keys similar to a query string in terms of the <a
-   * href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein distance</a>.
+   * href="http://en.wikipedia.org/wiki/Levenshtein_distance">Levenshtein distance</a>.
    * 
    * @param query The query string.
    * @param maxLevenshteinDistance The maximum distance of keys to adopt.
-   * @param utf Flag to treat keys as UTF-8 strings.
+   * @param keyCharset The character encoding of the keys and query string.
    * @param limit The maximum number of keys to retrieve - must be greater than 0.
    * @return a list of matching keys, or {@code null} if there were no matches.
    * @throws KyotoException on failure.
    * @see kyotocabinet.DB#match_similar(String, long, boolean, long)
    */
-  public List<String> matchKeysByLevenshtein(String query, long maxLevenshteinDistance, boolean utf, long limit);
+  public List<String> matchKeysByLevenshtein(String query, long maxLevenshteinDistance, Charset keyCharset, long limit);
 
   /**
    * Accept a read-only visitor to a single record. The visit operation on the record is performed atomically and other
