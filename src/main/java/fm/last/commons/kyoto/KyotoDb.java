@@ -93,7 +93,7 @@ public interface KyotoDb extends Closeable {
    * @note The operation of the processor is performed atomically and other threads accessing the same record are
    *       blocked. To avoid deadlock, any explicit database operation must not be performed in this method.
    */
-  public boolean occupy(LockType lockType, KyotoFileProcessor fileProcessor);
+  public boolean occupy(AccessType accessType, KyotoFileProcessor fileProcessor);
 
   /**
    * Get keys similar to a string in terms of the levenshtein distance.

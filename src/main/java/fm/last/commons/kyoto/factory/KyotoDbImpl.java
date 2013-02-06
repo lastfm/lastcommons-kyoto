@@ -29,12 +29,12 @@ import java.util.Set;
 import kyotocabinet.DB;
 import kyotocabinet.Error;
 import kyotocabinet.FileProcessor;
+import fm.last.commons.kyoto.AccessType;
 import fm.last.commons.kyoto.Atomicity;
 import fm.last.commons.kyoto.DbType;
 import fm.last.commons.kyoto.KyotoCursor;
 import fm.last.commons.kyoto.KyotoDb;
 import fm.last.commons.kyoto.KyotoFileProcessor;
-import fm.last.commons.kyoto.LockType;
 import fm.last.commons.kyoto.MergeType;
 import fm.last.commons.kyoto.ReadOnlyStringVisitor;
 import fm.last.commons.kyoto.ReadOnlyVisitor;
@@ -523,12 +523,12 @@ class KyotoDbImpl implements KyotoDb {
   }
 
   @Override
-  public boolean occupy(LockType lockType, KyotoFileProcessor fileProcessor) {
+  public boolean occupy(AccessType accessType, KyotoFileProcessor fileProcessor) {
     FileProcessor adapted = null;
     if (fileProcessor != null) {
       adapted = new FileProcessorAdapter(fileProcessor);
     }
-    return errorHandler.wrapBooleanCall(delegate.occupy(lockType.value(), adapted));
+    return errorHandler.wrapBooleanCall(delegate.occupy(accessType.value(), adapted));
   }
 
   @Override

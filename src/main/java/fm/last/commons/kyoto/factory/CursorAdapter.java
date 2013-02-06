@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import kyotocabinet.Cursor;
 import kyotocabinet.Error;
+import fm.last.commons.kyoto.AccessType;
 import fm.last.commons.kyoto.CursorStep;
 import fm.last.commons.kyoto.KyotoCursor;
 import fm.last.commons.kyoto.ReadOnlyVisitor;

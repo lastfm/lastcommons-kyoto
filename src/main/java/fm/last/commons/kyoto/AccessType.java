@@ -13,9 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package fm.last.commons.kyoto.factory;
+package fm.last.commons.kyoto;
 
-enum AccessType {
+public enum AccessType {
   READ_WRITE(true),
   READ_ONLY(false);
 
@@ -25,7 +25,7 @@ enum AccessType {
     this.value = value;
   }
 
-  boolean value() {
+  public boolean value() {
     return value;
   }
 }
