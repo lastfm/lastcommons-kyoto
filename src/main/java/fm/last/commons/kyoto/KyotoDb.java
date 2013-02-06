@@ -32,9 +32,82 @@ public interface KyotoDb extends Closeable {
 
   /**
    * Specifies no limit for the number of results returned from {@link #matchKeysByPrefix(String, long)},
-   * {@link #matchKeysByRegex(String, long)}.
+   * {@link #matchKeysByRegex(String, long)}, {@link #matchKeysByLevenshtein(String, long, boolean, long)}.
    */
   public static final int NO_LIMIT = -1;
+
+  /**
+   * @param key
+   * @return
+   * @see kyotocabinet.DB#check(byte[])
+   */
+  public boolean exists(byte[] key);
+
+  /**
+   * @param key
+   * @return
+   * @see kyotocabinet.DB#check(String)
+   */
+  public boolean exists(String key);
+
+  /**
+   * Check the existence of a record.
+   * 
+   * @param key the key.
+   * @return the size of the value, or -1 on failure.
+   * @see kyotocabinet.DB#check(byte[])
+   */
+  public int valueSize(byte[] key);
+
+  /**
+   * @param key
+   * @return
+   * @see kyotocabinet.DB#check(String)
+   */
+  public int valueSize(String key);
+
+  /**
+   * Retrieve the value of a record and remove it atomically.
+   * 
+   * @param key the key.
+   * @return the value of the corresponding record, or null on failure.
+   * @see kyotocabinet.DB#seize(String)
+   */
+  public byte[] getAndRemove(byte[] key);
+
+  /**
+   * Retrieve the value of a record and remove it atomically.
+   * 
+   * @note Equal to the original DB.seize method except that the parameter and the return value are String.
+   * @see kyotocabinet.DB#seize(byte[])
+   */
+  public String getAndRemove(String key);
+
+  /**
+   * Occupy database by locking and do something meanwhile.
+   * 
+   * @param writable true to use writer lock, or false to use reader lock.
+   * @param proc a processor object which implements the FileProcessor interface. If it is null, no processing is
+   *          performed.
+   * @return true on success, or false on failure.
+   * @note The operation of the processor is performed atomically and other threads accessing the same record are
+   *       blocked. To avoid deadlock, any explicit database operation must not be performed in this method.
+   */
+  public boolean occupy(LockType lockType, KyotoFileProcessor fileProcessor);
+
+  /**
+   * Get keys similar to a string in terms of the levenshtein distance.
+   * 
+   * @param query the query string.
+   * @param maxLevenshteinDistance the maximum distance of keys to adopt.
+   * @param utf flag to treat keys as UTF-8 strings.
+   * @param limit the maximum number to retrieve. If it is negative, no limit is specified.
+   * @return a list object of matching keys, or null on failure.
+   * @see kyotocabinet.DB#match_similar(String, long, boolean, long)
+   */
+  public List<String> matchKeysByLevenshtein(String query, long maxLevenshteinDistance, boolean utf);
+
+  public List<String> matchKeysByLevenshtein(String query, long maxLevenshteinDistance, boolean utf, long limit);
 
   /**
    * Accept a read-only visitor to a single record. The visit operation on the record is performed atomically and other

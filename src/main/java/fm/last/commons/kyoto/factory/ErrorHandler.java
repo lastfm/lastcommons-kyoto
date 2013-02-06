@@ -40,6 +40,13 @@ class ErrorHandler {
     return success;
   }
 
+  int wrapIntCall(int result, int errorValue) {
+    if (result == errorValue) {
+      processError();
+    }
+    return result;
+  }
+
   long wrapLongCall(long result, long errorValue) {
     if (result == errorValue) {
       processError();

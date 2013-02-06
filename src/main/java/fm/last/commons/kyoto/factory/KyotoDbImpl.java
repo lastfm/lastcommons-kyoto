@@ -34,6 +34,7 @@ import fm.last.commons.kyoto.DbType;
 import fm.last.commons.kyoto.KyotoCursor;
 import fm.last.commons.kyoto.KyotoDb;
 import fm.last.commons.kyoto.KyotoFileProcessor;
+import fm.last.commons.kyoto.LockType;
 import fm.last.commons.kyoto.MergeType;
 import fm.last.commons.kyoto.ReadOnlyStringVisitor;
 import fm.last.commons.kyoto.ReadOnlyVisitor;
@@ -194,6 +195,16 @@ class KyotoDbImpl implements KyotoDb {
   }
 
   @Override
+  public boolean exists(byte[] key) {
+    return valueSize(key) >= 0;
+  }
+
+  @Override
+  public boolean exists(String key) {
+    return valueSize(key) >= 0;
+  }
+
+  @Override
   public long recordCount() {
     checkDbIsOpen();
     return errorHandler.wrapLongCall(delegate.count(), -1);
@@ -246,6 +257,18 @@ class KyotoDbImpl implements KyotoDb {
   public String get(String key) {
     checkDbIsOpen();
     return errorHandler.wrapObjectCall(delegate.get(key));
+  }
+
+  @Override
+  public byte[] getAndRemove(byte[] key) {
+    checkDbIsOpen();
+    return errorHandler.wrapObjectCall(delegate.seize(key));
+  }
+
+  @Override
+  public String getAndRemove(String key) {
+    checkDbIsOpen();
+    return errorHandler.wrapObjectCall(delegate.seize(key));
   }
 
   @Override
@@ -364,7 +387,25 @@ class KyotoDbImpl implements KyotoDb {
   }
 
   @Override
+  public List<String> matchKeysByLevenshtein(String query, long maxLevenshteinDistance, boolean utf) {
+    checkDbIsOpen();
+    return errorHandler.wrapObjectCall(delegate.match_similar(query, maxLevenshteinDistance, utf, NO_LIMIT));
+  }
+
+  @Override
+  public List<String> matchKeysByLevenshtein(String query, long maxLevenshteinDistance, boolean utf, long limit) {
+    if (limit < 1) {
+      throw new IllegalArgumentException("limit must be > 0");
+    }
+    checkDbIsOpen();
+    return errorHandler.wrapObjectCall(delegate.match_similar(query, maxLevenshteinDistance, utf, limit));
+  }
+
+  @Override
   public List<String> matchKeysByPrefix(String prefix, long limit) {
+    if (limit < 1) {
+      throw new IllegalArgumentException("limit must be > 0");
+    }
     checkDbIsOpen();
     return errorHandler.wrapObjectCall(delegate.match_prefix(prefix, limit));
   }
@@ -377,6 +418,9 @@ class KyotoDbImpl implements KyotoDb {
 
   @Override
   public List<String> matchKeysByRegex(String regex, long limit) {
+    if (limit < 1) {
+      throw new IllegalArgumentException("limit must be > 0");
+    }
     checkDbIsOpen();
     return errorHandler.wrapObjectCall(delegate.match_regex(regex, limit));
   }
@@ -479,6 +523,15 @@ class KyotoDbImpl implements KyotoDb {
   }
 
   @Override
+  public boolean occupy(LockType lockType, KyotoFileProcessor fileProcessor) {
+    FileProcessor adapted = null;
+    if (fileProcessor != null) {
+      adapted = new FileProcessorAdapter(fileProcessor);
+    }
+    return errorHandler.wrapBooleanCall(delegate.occupy(lockType.value(), adapted));
+  }
+
+  @Override
   public void synchronize(Synchronization synchronization, KyotoFileProcessor fileProcessor) {
     FileProcessor adapted = null;
     if (fileProcessor != null) {
@@ -486,6 +539,18 @@ class KyotoDbImpl implements KyotoDb {
     }
     errorHandler.wrapVoidCall(delegate.synchronize(synchronization.value(), adapted), "Could not " + synchronization
         + " synchronize DB " + descriptor + " with " + fileProcessor);
+  }
+
+  @Override
+  public int valueSize(byte[] key) {
+    checkDbIsOpen();
+    return errorHandler.wrapIntCall(delegate.check(key), -1);
+  }
+
+  @Override
+  public int valueSize(String key) {
+    checkDbIsOpen();
+    return errorHandler.wrapIntCall(delegate.check(key), -1);
   }
 
   @Override
