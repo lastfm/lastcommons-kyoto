@@ -77,8 +77,7 @@ or with Apache Commons IO:
 This project uses the [Maven](http://maven.apache.org/) build system. See notes in the 'Dependencies' section on building the dependencies.
 
 #Further work
-* Publish the `com.fallabs:kyotocabinet:1.16` dependency into Maven Central.
-* Support more recent versions of `kyotocabinet`.
+* Support `kyotocabinet.MapReduce`.
 * Implement a Spring [`PlatformTransactionManager`](http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/transaction/PlatformTransactionManager.html "Spring Framework Javadoc - PlatformTransactionManager") for simple integration with Spring's transaction management framework.
 
 # Contributing
