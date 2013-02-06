@@ -32,36 +32,47 @@ public interface KyotoDb extends Closeable {
 
   /**
    * Specifies no limit for the number of results returned from {@link #matchKeysByPrefix(String, long)},
-   * {@link #matchKeysByRegex(String, long)}, {@link #matchKeysByLevenshtein(String, long, boolean, long)}.
+   * {@link #matchKeysByRegex(String, long)},{@link #matchKeysByLevenshtein(String, long, boolean)},
+   * {@link #matchKeysByLevenshtein(String, long, boolean, long)}.
    */
   public static final int NO_LIMIT = -1;
 
   /**
-   * @param key
-   * @return
+   * Check whether a record exists with the given key.
+   * 
+   * @param key The record key.
+   * @return true if the record exists, false otherwise
+   * @throws KyotoException on failure.
    * @see kyotocabinet.DB#check(byte[])
    */
   public boolean exists(byte[] key);
 
   /**
-   * @param key
-   * @return
+   * Check whether a record exists with the given key.
+   * 
+   * @param key The record key.
+   * @return true if the record exists, false otherwise
+   * @throws KyotoException on failure.
    * @see kyotocabinet.DB#check(String)
    */
   public boolean exists(String key);
 
   /**
-   * Check the existence of a record.
+   * Return the size of the record value associated with this key.
    * 
-   * @param key the key.
-   * @return the size of the value, or -1 on failure.
+   * @param key The record key.
+   * @return The size of the value, or -1 if the record doesn't exist.
+   * @throws KyotoException on failure.
    * @see kyotocabinet.DB#check(byte[])
    */
   public int valueSize(byte[] key);
 
   /**
-   * @param key
-   * @return
+   * Return the size of the record value associated with this key.
+   * 
+   * @param key The record key.
+   * @return The size of the value, or -1 if the record doesn't exist.
+   * @throws KyotoException on failure.
    * @see kyotocabinet.DB#check(String)
    */
   public int valueSize(String key);
@@ -69,44 +80,62 @@ public interface KyotoDb extends Closeable {
   /**
    * Retrieve the value of a record and remove it atomically.
    * 
-   * @param key the key.
-   * @return the value of the corresponding record, or null on failure.
-   * @see kyotocabinet.DB#seize(String)
+   * @param key The record key.
+   * @return The value of the corresponding record, or {@code null} if the record doesn't exist.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#seize(byte[])
    */
   public byte[] getAndRemove(byte[] key);
 
   /**
    * Retrieve the value of a record and remove it atomically.
    * 
-   * @note Equal to the original DB.seize method except that the parameter and the return value are String.
-   * @see kyotocabinet.DB#seize(byte[])
+   * @param key The record key.
+   * @return The value of the corresponding record, or {@code null} if the record doesn't exist.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#seize(String)
    */
   public String getAndRemove(String key);
 
   /**
    * Occupy database by locking and do something meanwhile.
    * 
-   * @param writable true to use writer lock, or false to use reader lock.
-   * @param proc a processor object which implements the FileProcessor interface. If it is null, no processing is
-   *          performed.
-   * @return true on success, or false on failure.
+   * @param accessType Declares a read or write lock the for operation.
+   * @param fileProcessor A processor that implements the {@link KyotoFileProcessor} interface. If it is {@code null} no
+   *          processing is performed.
+   * @return {@code true} on success, or {@code false} on failure.
+   * @throws KyotoException on failure.
    * @note The operation of the processor is performed atomically and other threads accessing the same record are
    *       blocked. To avoid deadlock, any explicit database operation must not be performed in this method.
+   * @see {@link kyotocabinet.DB#occupy(boolean, kyotocabinet.FileProcessor)}
    */
   public boolean occupy(AccessType accessType, KyotoFileProcessor fileProcessor);
 
   /**
-   * Get keys similar to a string in terms of the levenshtein distance.
+   * Get all keys similar to a query string in terms of the <a
+   * href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein distance</a>.
    * 
-   * @param query the query string.
-   * @param maxLevenshteinDistance the maximum distance of keys to adopt.
-   * @param utf flag to treat keys as UTF-8 strings.
-   * @param limit the maximum number to retrieve. If it is negative, no limit is specified.
-   * @return a list object of matching keys, or null on failure.
+   * @param query The query string.
+   * @param maxLevenshteinDistance The maximum distance of keys to adopt.
+   * @param utf Flag to treat keys as UTF-8 strings.
+   * @return a list of matching keys, or {@code null} if there were no matches.
+   * @throws KyotoException on failure.
    * @see kyotocabinet.DB#match_similar(String, long, boolean, long)
    */
   public List<String> matchKeysByLevenshtein(String query, long maxLevenshteinDistance, boolean utf);
 
+  /**
+   * Get a bounded list of keys similar to a query string in terms of the <a
+   * href="http://en.wikipedia.org/wiki/Levenshtein_distance">levenshtein distance</a>.
+   * 
+   * @param query The query string.
+   * @param maxLevenshteinDistance The maximum distance of keys to adopt.
+   * @param utf Flag to treat keys as UTF-8 strings.
+   * @param limit The maximum number of keys to retrieve - must be greater than 0.
+   * @return a list of matching keys, or {@code null} if there were no matches.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#match_similar(String, long, boolean, long)
+   */
   public List<String> matchKeysByLevenshtein(String query, long maxLevenshteinDistance, boolean utf, long limit);
 
   /**
