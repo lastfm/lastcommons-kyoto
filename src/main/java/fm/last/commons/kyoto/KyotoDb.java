@@ -206,8 +206,8 @@ public interface KyotoDb extends Closeable {
    * @return true if the record value was changed to the new value.
    * @throws KyotoException on failure.
    * @see kyotocabinet.DB#cas(byte[], byte[], byte[])
-   * @note Take care: The documentation isn't that clear on what {@code null} parameters represent, or the meaning
-   *       of the return value.
+   * @note Take care: The documentation isn't that clear on what {@code null} parameters represent, or the meaning of
+   *       the return value.
    */
   boolean compareAndSwap(byte[] key, byte[] oldValue, byte[] newValue);
 
@@ -220,8 +220,8 @@ public interface KyotoDb extends Closeable {
    * @return true if the record value was changed to the new value.
    * @throws KyotoException on failure.
    * @see kyotocabinet.DB#cas(byte[], byte[], byte[])
-   * @note Take care: The documentation isn't that clear on what {@code null} parameters represent, or the meaning
-   *       of the return value.
+   * @note Take care: The documentation isn't that clear on what {@code null} parameters represent, or the meaning of
+   *       the return value.
    */
   boolean compareAndSwap(String key, String oldValue, String newValue);
 
@@ -322,8 +322,8 @@ public interface KyotoDb extends Closeable {
   /**
    * The underlying database file.
    * 
-   * @return The {@link File} where this database is stored, or {@code null} if the {@link DbType} does not require
-   *         file system storage.
+   * @return The {@link File} where this database is stored, or {@code null} if the {@link DbType} does not require file
+   *         system storage.
    * @see kyotocabinet.DB#path()
    */
   File getFile();
@@ -334,53 +334,144 @@ public interface KyotoDb extends Closeable {
   DbType getType();
 
   /**
-   * Increment the record value by a delta.
+   * Increment the record value by a delta throwing a {@link KyotoException} if the key record does not exist.
    * 
    * @param key the record key.
-   * @param delta amount to increment the record value
+   * @param delta amount to increment the record value.
    * @return the resulting value after the increment has been applied.
    * @throws KyotoException on failure.
-   * @see kyotocabinet.DB#increment(byte[], double)
+   * @see kyotocabinet.DB#increment_double(byte[], double, double)
    */
   double increment(byte[] key, double delta);
 
   /**
-   * Increment the record value by a delta.
+   * Increment the record value by a delta, using the delta value as the default value if the key record does not exist.
    * 
    * @param key the record key.
-   * @param delta amount to increment the record value
+   * @param delta amount to increment the record value or the default value if the record doesn't exist.
    * @return the resulting value after the increment has been applied.
    * @throws KyotoException on failure.
-   * @see kyotocabinet.DB#increment(byte[], long)
+   * @see kyotocabinet.DB#increment_double(byte[], double, double)
+   */
+  double incrementOrSet(byte[] key, double delta);
+
+  /**
+   * Increment the record value by a delta, using a default value if the key record does not exist.
+   * 
+   * @param key the record key.
+   * @param delta amount to increment the record value if it exists.
+   * @param defaultValue the default value to set if the record doesn't exist.
+   * @return the resulting value after the increment has been applied.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#increment_double(byte[], double, double)
+   */
+  double incrementOrSetDefault(byte[] key, double delta, double defaultValue);
+
+  /**
+   * Increment the record value by a delta throwing a {@link KyotoException} if the key record does not exist.
+   * 
+   * @param key the record key.
+   * @param delta amount to increment the record value.
+   * @return the resulting value after the increment has been applied.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#increment(byte[], long, long)
    */
   long increment(byte[] key, long delta);
 
   /**
-   * Increment the record value by a delta.
+   * Increment the record value by a delta, using the delta value as the default value if the key record does not exist.
    * 
    * @param key the record key.
-   * @param delta amount to increment the record value
+   * @param delta amount to increment the record value or the default value if the record doesn't exist.
    * @return the resulting value after the increment has been applied.
    * @throws KyotoException on failure.
-   * @see kyotocabinet.DB#increment(String, double)
+   * @see kyotocabinet.DB#increment(byte[], long, long)
+   */
+  long incrementOrSet(byte[] key, long delta);
+
+  /**
+   * Increment the record value by a delta, using a default value if the key record does not exist.
+   * 
+   * @param key the record key.
+   * @param delta amount to increment the record value if it exists.
+   * @param defaultValue the default value to set if the record doesn't exist.
+   * @return the resulting value after the increment has been applied.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#increment(byte[], long, long)
+   */
+  long incrementOrSetDefault(byte[] key, long delta, long defaultValue);
+
+  /**
+   * Increment the record value by a delta throwing a {@link KyotoException} if the key record does not exist.
+   * 
+   * @param key the record key.
+   * @param delta amount to increment the record value.
+   * @return the resulting value after the increment has been applied.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#increment_double(String, double, double)
    */
   double increment(String key, double delta);
 
   /**
-   * Increment the record value by a delta.
+   * Increment the record value by a delta, using the delta value as the default value if the key record does not exist.
    * 
    * @param key the record key.
-   * @param delta amount to increment the record value
+   * @param delta amount to increment the record value or the default value if the record doesn't exist.
    * @return the resulting value after the increment has been applied.
    * @throws KyotoException on failure.
-   * @see kyotocabinet.DB#increment(String, long)
+   * @see kyotocabinet.DB#increment_double(String, double, double)
+   */
+  double incrementOrSet(String key, double delta);
+
+  /**
+   * Increment the record value by a delta, using a default value if the key record does not exist.
+   * 
+   * @param key the record key.
+   * @param delta amount to increment the record value if it exists.
+   * @param defaultValue the default value to set if the record doesn't exist.
+   * @return the resulting value after the increment has been applied.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#increment_double(String, double, double)
+   */
+  double incrementOrSetDefault(String key, double delta, double defaultValue);
+
+  /**
+   * Increment the record value by a delta throwing a {@link KyotoException} if the key record does not exist.
+   * 
+   * @param key the record key.
+   * @param delta amount to increment the record value.
+   * @return the resulting value after the increment has been applied.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#increment(String, long, long)
    */
   long increment(String key, long delta);
 
   /**
-   * Visit all records with a read-only {@link ReadOnlyVisitor}. All records are visited in a single atomic
-   * block and other threads are blocked until the operation completes. The {@link ReadOnlyVisitor} cannot
-   * mutate records.
+   * Increment the record value by a delta, using the delta value as the default value if the key record does not exist.
+   * 
+   * @param key the record key.
+   * @param delta amount to increment the record value or the default value if the record doesn't exist.
+   * @return the resulting value after the increment has been applied.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#increment(String, long, long)
+   */
+  long incrementOrSet(String key, long delta);
+
+  /**
+   * Increment the record value by a delta, using a default value if the key record does not exist.
+   * 
+   * @param key the record key.
+   * @param delta amount to increment the record value if it exists.
+   * @param defaultValue the default value to set if the record doesn't exist.
+   * @return the resulting value after the increment has been applied.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#increment(String, long, long)
+   */
+  long incrementOrSetDefault(String key, long delta, long defaultValue);
+
+  /**
+   * Visit all records with a read-only {@link ReadOnlyVisitor}. All records are visited in a single atomic block and
+   * other threads are blocked until the operation completes. The {@link ReadOnlyVisitor} cannot mutate records.
    * 
    * @param visitor a read-only visitor that implements {@link ReadOnlyVisitor}.
    * @throws KyotoException on failure.
@@ -389,9 +480,9 @@ public interface KyotoDb extends Closeable {
   void iterate(ReadOnlyVisitor visitor);
 
   /**
-   * Visit all records with a read-only {@link ReadOnlyStringVisitor}. All records are visited in a single atomic
-   * block and other threads are blocked until the operation completes. The {@link ReadOnlyStringVisitor} cannot
-   * mutate records.
+   * Visit all records with a read-only {@link ReadOnlyStringVisitor}. All records are visited in a single atomic block
+   * and other threads are blocked until the operation completes. The {@link ReadOnlyStringVisitor} cannot mutate
+   * records.
    * 
    * @param visitor a read-only visitor that implements {@link ReadOnlyStringVisitor}.
    * @throws KyotoException on failure.
@@ -400,9 +491,8 @@ public interface KyotoDb extends Closeable {
   void iterate(ReadOnlyStringVisitor visitor);
 
   /**
-   * Visit all records with a read-write {@link WritableVisitor}. All records are visited in a single atomic
-   * block and other threads are blocked until the operation completes. The {@link WritableVisitor} can mutate
-   * records.
+   * Visit all records with a read-write {@link WritableVisitor}. All records are visited in a single atomic block and
+   * other threads are blocked until the operation completes. The {@link WritableVisitor} can mutate records.
    * 
    * @param visitor a read-write visitor that implements {@link WritableVisitor}.
    * @throws KyotoException on failure.

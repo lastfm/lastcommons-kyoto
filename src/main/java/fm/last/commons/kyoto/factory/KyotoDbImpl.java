@@ -15,6 +15,9 @@
  */
 package fm.last.commons.kyoto.factory;
 
+import static fm.last.commons.kyoto.factory.OnKeyMiss.RETURN_ERROR;
+import static fm.last.commons.kyoto.factory.OnKeyMiss.USE_DELTA;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -258,25 +261,73 @@ class KyotoDbImpl implements KyotoDb {
   @Override
   public double increment(byte[] key, double delta) {
     checkDbIsOpen();
-    return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta), Double.NaN);
-  }
-
-  @Override
-  public long increment(byte[] key, long delta) {
-    checkDbIsOpen();
-    return errorHandler.wrapLongCall(delegate.increment(key, delta), Long.MIN_VALUE);
+    return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta, RETURN_ERROR.asDouble()), Double.NaN);
   }
 
   @Override
   public double increment(String key, double delta) {
     checkDbIsOpen();
-    return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta), Double.NaN);
+    return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta, RETURN_ERROR.asDouble()), Double.NaN);
+  }
+
+  @Override
+  public long increment(byte[] key, long delta) {
+    checkDbIsOpen();
+    return errorHandler.wrapLongCall(delegate.increment(key, delta, RETURN_ERROR.asLong()), Long.MIN_VALUE);
   }
 
   @Override
   public long increment(String key, long delta) {
     checkDbIsOpen();
-    return errorHandler.wrapLongCall(delegate.increment(key, delta), Long.MIN_VALUE);
+    return errorHandler.wrapLongCall(delegate.increment(key, delta, RETURN_ERROR.asLong()), Long.MIN_VALUE);
+  }
+
+  @Override
+  public double incrementOrSet(byte[] key, double delta) {
+    checkDbIsOpen();
+    return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta, USE_DELTA.asDouble()), Double.NaN);
+  }
+
+  @Override
+  public double incrementOrSet(String key, double delta) {
+    checkDbIsOpen();
+    return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta, USE_DELTA.asDouble()), Double.NaN);
+  }
+
+  @Override
+  public double incrementOrSetDefault(byte[] key, double delta, double defaultValue) {
+    checkDbIsOpen();
+    return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta, defaultValue), Double.NaN);
+  }
+
+  @Override
+  public double incrementOrSetDefault(String key, double delta, double defaultValue) {
+    checkDbIsOpen();
+    return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta, defaultValue), Double.NaN);
+  }
+
+  @Override
+  public long incrementOrSet(byte[] key, long delta) {
+    checkDbIsOpen();
+    return errorHandler.wrapLongCall(delegate.increment(key, delta, USE_DELTA.asLong()), Long.MIN_VALUE);
+  }
+
+  @Override
+  public long incrementOrSet(String key, long delta) {
+    checkDbIsOpen();
+    return errorHandler.wrapLongCall(delegate.increment(key, delta, RETURN_ERROR.asLong()), Long.MIN_VALUE);
+  }
+
+  @Override
+  public long incrementOrSetDefault(byte[] key, long delta, long defaultValue) {
+    checkDbIsOpen();
+    return errorHandler.wrapLongCall(delegate.increment(key, delta, defaultValue), Long.MIN_VALUE);
+  }
+
+  @Override
+  public long incrementOrSetDefault(String key, long delta, long defaultValue) {
+    checkDbIsOpen();
+    return errorHandler.wrapLongCall(delegate.increment(key, delta, defaultValue), Long.MIN_VALUE);
   }
 
   @Override
