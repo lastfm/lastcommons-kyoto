@@ -1,12 +1,21 @@
 #About
-A better Java wrapper around the [Kyoto Cabinet](http://fallabs.com/kyotocabinet/ "Kyoto Cabinet: a straightforward implementation of DBM") library. It's great
-to be able to easily access kyoto-cabinet from Java, however the [default Java bindings](http://fallabs.com/kyotocabinet/javadoc/ "kyotocabinet-java Javadoc") are missing some features we've come to expect in a modern Java developement environment. lastcommons-kyoto addresses this by wrapping the default bindings in an API that should be more familiar to most Java developers.
+A better Java wrapper around the
+[Kyoto Cabinet](http://fallabs.com/kyotocabinet/ "Kyoto Cabinet: a straightforwardimplementation of DBM")
+library. It's great to be able to easily access kyoto-cabinet from Java, however the
+[default Java bindings](http://fallabs.com/kyotocabinet/javadoc/ "kyotocabinet-java Javadoc")
+are missing some features we've come to expect in a modern Java developement environment. lastcommons-kyoto addresses
+this by wrapping the default bindings in an API that should be more familiar to most Java developers.
 
 #Dependencies
-This wrapper uses `kyotocabinet-java` version [1.24](http://fallabs.com/kyotocabinet/javapkg/kyotocabinet-java-1.24.tar.gz "kyotocabinet-java packages") which in turn requires `kyotocabinet` version [1.2.65 or greater](http://fallabs.com/kyotocabinet/pkg/ "kyotocabinet packages"). At this time you may need to build both the native libraries and JNI bindings yourself.
+This wrapper uses `kyotocabinet-java` version
+[1.24](http://fallabs.com/kyotocabinet/javapkg/kyotocabinet-java-1.24.tar.gz "kyotocabinet-java packages")
+which in turn requires `kyotocabinet` version [
+1.2.65 or greater](http://fallabs.com/kyotocabinet/pkg/ "kyotocabinet packages").
+At this time you may need to build both the native libraries yourself. The JNI bindings are in Maven Central.
 
 #Start using
-You can [download](https://github.com/lastfm/lastcommons-kyoto/downloads) a JAR file or obtain lastcommons-kyoto from Maven Central using the following identifier:
+You can [download](https://github.com/lastfm/lastcommons-kyoto/downloads) a JAR file or obtain lastcommons-kyoto from
+Maven Central using the following identifier:
 
 * [fm.last.commons:lastcommons-kyoto:1.24.0](http://search.maven.org/#artifactdetails%7Cfm.last.commons%7Clastcommons-kyoto%7C1.24.0%7Cjar)
                                             
