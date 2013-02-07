@@ -17,11 +17,17 @@ package fm.last.commons.kyoto.factory;
 
 import kyotocabinet.MapReduce;
 import kyotocabinet.ValueIterator;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fm.last.commons.kyoto.mapreduce.Collector;
 import fm.last.commons.kyoto.mapreduce.Job;
 import fm.last.commons.kyoto.mapreduce.JobExecutor;
 
 class JobExecutorImpl implements JobExecutor {
+
+  private final Logger LOG = LoggerFactory.getLogger(getClass());
 
   private final KyotoDbImpl database;
   private final ErrorHandler errorHandler;
@@ -47,7 +53,8 @@ class JobExecutorImpl implements JobExecutor {
       public boolean map(byte[] key, byte[] value) {
         try {
           job.getMapper().map(key, value, collector);
-        } catch (Exception e) {
+        } catch (Throwable t) {
+          LOG.error("Exception thrown in map invocation.", t);
           return false;
         }
         return true;
@@ -57,7 +64,8 @@ class JobExecutorImpl implements JobExecutor {
       public boolean reduce(byte[] key, ValueIterator valueIterator) {
         try {
           job.getReducer().reduce(key, new ValueIteratorAdapter(valueIterator));
-        } catch (Exception e) {
+        } catch (Throwable t) {
+          LOG.error("Exception thrown in reduce invocation.", t);
           return false;
         }
         return true;
