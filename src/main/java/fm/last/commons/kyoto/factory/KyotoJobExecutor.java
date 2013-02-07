@@ -25,14 +25,14 @@ import fm.last.commons.kyoto.mapreduce.Collector;
 import fm.last.commons.kyoto.mapreduce.Job;
 import fm.last.commons.kyoto.mapreduce.JobExecutor;
 
-class JobExecutorImpl implements JobExecutor {
+class KyotoJobExecutor implements JobExecutor {
 
   private final Logger LOG = LoggerFactory.getLogger(getClass());
 
   private final KyotoDbImpl database;
   private final ErrorHandler errorHandler;
 
-  JobExecutorImpl(KyotoDbImpl database) {
+  KyotoJobExecutor(KyotoDbImpl database) {
     this.database = database;
     errorHandler = database.getErrorHandler();
   }

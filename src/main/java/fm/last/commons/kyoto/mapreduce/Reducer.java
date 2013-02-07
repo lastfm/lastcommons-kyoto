@@ -31,6 +31,6 @@ public interface Reducer {
    * @throws KyotoException on failure.
    * @see {@link kyotocabinet.MapReduce#reduce(byte[], ValueIterator)}
    */
-  void reduce(byte[] key, Iterator<byte[]> valueIterator);
+  void reduce(byte[] key, Iterator<byte[]> values);
 
 }

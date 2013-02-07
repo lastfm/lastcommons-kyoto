@@ -26,7 +26,7 @@ public class KyotoJobExecutorFactory implements JobExecutorFactory {
     if (!(database instanceof KyotoDbImpl)) {
       throw new IllegalArgumentException(database + " must be an instance of " + KyotoDbImpl.class.getSimpleName());
     }
-    return new JobExecutorImpl((KyotoDbImpl) database);
+    return new KyotoJobExecutor((KyotoDbImpl) database);
   }
 
 }
