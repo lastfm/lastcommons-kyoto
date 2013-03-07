@@ -12,7 +12,8 @@ public final class FixedPoint {
   }
 
   /**
-   * Converts a 16 byte fixed point decimal to a double.
+   * Converts a 16 byte fixed point decimal to a double. Thanks to jamesg for putting me on the right track with this
+   * conversion.
    * 
    * @param value Array of 16 bytes that represents
    * @return value representation as a double.
