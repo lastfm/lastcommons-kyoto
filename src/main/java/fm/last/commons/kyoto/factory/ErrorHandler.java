@@ -54,8 +54,8 @@ class ErrorHandler {
     return result;
   }
 
-  double wrapDoubleCall(double result, double errorValue) {
-    if (result == errorValue) {
+  double wrapDoubleCall(Double result, Double errorValue) {
+    if (result.equals(errorValue)) {
       processError();
     }
     return result;

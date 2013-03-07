@@ -18,6 +18,7 @@ package fm.last.commons.kyoto;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
@@ -419,7 +420,29 @@ public interface KyotoDb extends Closeable {
    * @throws KyotoException on failure.
    * @see kyotocabinet.DB#get(String)
    */
-  public String get(String key);
+  String get(String key);
+
+  /**
+   * Retrieve the double value of a record.
+   * 
+   * @param key the record key.
+   * @return the double representation of the record's value.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#get(byte[])
+   * @see fm.last.commons.kyoto.FixedPoint#toDouble(byte[])
+   */
+  double getDouble(byte[] key);
+
+  /**
+   * Retrieve the double value of a record.
+   * 
+   * @param key the record key.
+   * @return the double representation of the record's value.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#get(String)
+   * @see fm.last.commons.kyoto.FixedPoint#toDouble(byte[])
+   */
+  double getDouble(String key);
 
   /**
    * The underlying database file.

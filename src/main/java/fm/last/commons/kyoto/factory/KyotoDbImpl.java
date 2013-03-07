@@ -20,7 +20,7 @@ import static fm.last.commons.kyoto.factory.OnKeyMiss.USE_DELTA;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +31,8 @@ import kyotocabinet.Error;
 import kyotocabinet.FileProcessor;
 import fm.last.commons.kyoto.AccessType;
 import fm.last.commons.kyoto.Atomicity;
-import fm.last.commons.kyoto.Charset;
 import fm.last.commons.kyoto.DbType;
+import fm.last.commons.kyoto.FixedPoint;
 import fm.last.commons.kyoto.KyotoCursor;
 import fm.last.commons.kyoto.KyotoDb;
 import fm.last.commons.kyoto.KyotoFileProcessor;
@@ -46,14 +46,16 @@ import fm.last.commons.kyoto.factory.ErrorHandler.ErrorSource;
 
 class KyotoDbImpl implements KyotoDb {
 
+  private static final Charset UTF_8 = Charset.forName("UTF-8");
+
   private final DB delegate;
   private final String descriptor;
   private final Set<Mode> modes;
   private final DbType dbType;
   private final File file;
   private final ErrorHandler errorHandler;
+  private Charset encoding;
   private volatile boolean open;
-  private String encoding;
 
   KyotoDbImpl(DbType dbType, final DB delegate, String descriptor, Set<Mode> modes, File file) {
     this.dbType = dbType;
@@ -73,7 +75,7 @@ class KyotoDbImpl implements KyotoDb {
     } else {
       open = false;
     }
-    encoding = "UTF-8";
+    encoding = UTF_8;
   }
 
   @Override
@@ -390,7 +392,7 @@ class KyotoDbImpl implements KyotoDb {
   @Override
   public List<String> matchKeysByLevenshtein(String query, long maxLevenshteinDistance, Charset keyCharset) {
     checkDbIsOpen();
-    return errorHandler.wrapObjectCall(delegate.match_similar(query, maxLevenshteinDistance, keyCharset.value(),
+    return errorHandler.wrapObjectCall(delegate.match_similar(query, maxLevenshteinDistance, keyCharset.equals(UTF_8),
         NO_LIMIT));
   }
 
@@ -400,8 +402,8 @@ class KyotoDbImpl implements KyotoDb {
       throw new IllegalArgumentException("limit must be > 0");
     }
     checkDbIsOpen();
-    return errorHandler
-        .wrapObjectCall(delegate.match_similar(query, maxLevenshteinDistance, keyCharset.value(), limit));
+    return errorHandler.wrapObjectCall(delegate.match_similar(query, maxLevenshteinDistance, keyCharset.equals(UTF_8),
+        limit));
   }
 
   @Override
@@ -559,7 +561,7 @@ class KyotoDbImpl implements KyotoDb {
   @Override
   public void setEncoding(String encoding) {
     errorHandler.wrapVoidCall(delegate.tune_encoding(encoding), "Could not set encoding: " + encoding);
-    this.encoding = encoding;
+    this.encoding = Charset.forName(encoding);
   }
 
   @Override
@@ -641,22 +643,14 @@ class KyotoDbImpl implements KyotoDb {
     if (value == null) {
       return null;
     }
-    try {
-      return new String(value, encoding);
-    } catch (UnsupportedEncodingException e) {
-      return new String(value);
-    }
+    return new String(value, encoding);
   }
 
   byte[] stringToByteArray(String str) {
     if (str == null) {
       return null;
     }
-    try {
-      return str.getBytes(encoding);
-    } catch (UnsupportedEncodingException e) {
-      return str.getBytes();
-    }
+    return str.getBytes(encoding);
   }
 
   private byte[][] stringListTo2DByteArray(List<String> values) {
@@ -683,6 +677,16 @@ class KyotoDbImpl implements KyotoDb {
     if (!open) {
       throw new IllegalStateException("Database is not open: " + this);
     }
+  }
+
+  @Override
+  public double getDouble(byte[] key) {
+    return FixedPoint.toDouble(get(key));
+  }
+
+  @Override
+  public double getDouble(String key) {
+    return FixedPoint.toDouble(get(key.getBytes(encoding)));
   }
 
 }

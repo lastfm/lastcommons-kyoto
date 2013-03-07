@@ -70,13 +70,23 @@ public class ErrorHandlerTest {
   }
 
   @Test
+  public void wrapIntCallOk() {
+    assertThat(errorHandler.wrapIntCall(1, -1), is(1));
+  }
+
+  @Test(expected = KyotoException.class)
+  public void wrapIntCallFail() {
+    errorHandler.wrapIntCall(-1, -1);
+  }
+
+  @Test
   public void wrapDoubleCallOk() {
     assertThat(errorHandler.wrapDoubleCall(0.1d, -1d), is(0.1d));
   }
 
   @Test(expected = KyotoException.class)
   public void wrapDoubleCallFail() {
-    errorHandler.wrapDoubleCall(-1d, -1d);
+    errorHandler.wrapDoubleCall(Double.NaN, Double.NaN);
   }
 
   @Test

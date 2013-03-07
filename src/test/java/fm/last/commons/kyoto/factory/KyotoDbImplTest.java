@@ -35,6 +35,7 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import fm.last.commons.kyoto.DbType;
+import fm.last.commons.kyoto.FixedPoint;
 import fm.last.commons.kyoto.KyotoDb;
 import fm.last.commons.kyoto.KyotoException;
 import fm.last.commons.kyoto.ReadOnlyVisitor;
@@ -211,4 +212,19 @@ public class KyotoDbImplTest {
     assertThat(capture.get("2"), is("b"));
     assertThat(capture.get("3"), is("c"));
   }
+
+  @Test
+  public void incrementOrSetOk() {
+    byte[] key = "non-existent".getBytes();
+    double newValue = kyotoDb.incrementOrSet(key, -1838.0908d);
+
+    assertThat(newValue, is(-1838.0908d));
+    assertThat(FixedPoint.toDouble(db.get(key)), is(-1838.0908d));
+  }
+
+  @Test(expected = KyotoException.class)
+  public void incrementNonExistent() {
+    kyotoDb.increment("non-existent", -1.1);
+  }
+
 }
