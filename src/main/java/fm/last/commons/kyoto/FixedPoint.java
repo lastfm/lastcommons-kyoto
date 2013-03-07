@@ -15,7 +15,7 @@ public final class FixedPoint {
    * Converts a 16 byte fixed point decimal to a double. Thanks to jamesg for putting me on the right track with this
    * conversion.
    * 
-   * @param value Array of 16 bytes that represents
+   * @param value Array of 16 bytes that represents a decimal value.
    * @return value representation as a double.
    */
   public static double toDouble(byte[] value) {
