@@ -16,9 +16,13 @@ import org.junit.runners.Parameterized.Parameters;
 public class CodecsToDoubleTest {
   private static final double ERROR_MARGIN = 0.000000000000001d;
 
+  // 10.0001
   private static final byte[] _10_0001 = new byte[] { 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 23, 72, 118, -25, -1 };
+  // -1.0
   private static final byte[] __1 = new byte[] { -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0 };
+  // -1.1
   private static final byte[] __1_1 = new byte[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -91, 12, -17, -123, -64, 0 };
+  // 1.1
   private static final byte[] _1_1 = new byte[] { 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 90, -13, 16, 122, 64, 0 };
 
   private final byte[] bytes;
