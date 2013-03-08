@@ -24,7 +24,6 @@ Maven Central using the following identifier:
 * Error conditions represented with exceptions instead of magic return values.
 * Implicit file suffix handling for the different Kyoto database types.
 * Descriptive builder pattern for creating and validating Kyoto database configurations.
-* Bi-directional marshalling of floating point values. 
 
 #Usage
 **Note:** We have taken the liberty of statically importing some enum constants for readability.

@@ -25,7 +25,6 @@ import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -42,8 +41,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import fm.last.commons.kyoto.Codecs;
 import fm.last.commons.kyoto.DbType;
-import fm.last.commons.kyoto.FixedPoint;
 import fm.last.commons.kyoto.KyotoDb;
 import fm.last.commons.kyoto.KyotoException;
 import fm.last.commons.kyoto.ReadOnlyVisitor;
@@ -229,7 +228,7 @@ public class KyotoDbImplTest {
     double newValue = kyotoDb.incrementWithDefault(key, -0.1d, -1838.0908d);
 
     assertThat(newValue, isConsideredToBe(-1838.1908d, ERROR_MARGIN));
-    assertThat(FixedPoint.toDouble(db.get(key)), isConsideredToBe(-1838.1908d, ERROR_MARGIN));
+    assertThat(Codecs.toDouble(db.get(key)), isConsideredToBe(-1838.1908d, ERROR_MARGIN));
   }
 
   @Test
@@ -238,7 +237,7 @@ public class KyotoDbImplTest {
     long newValue = kyotoDb.incrementWithDefault(key, 1L, 100L);
 
     assertThat(newValue, is(101L));
-    assertThat(decodeLong(db.get(key)), is(101L));
+    assertThat(Codecs.toLong(db.get(key)), is(101L));
   }
 
   @Test
@@ -246,11 +245,11 @@ public class KyotoDbImplTest {
     byte[] key = "non-existent".getBytes();
     double newValue = kyotoDb.incrementWithDefault(key, 0.1d, 1.1d);
     assertThat(newValue, isConsideredToBe(1.2d, ERROR_MARGIN));
-    assertThat(FixedPoint.toDouble(db.get(key)), isConsideredToBe(1.2d, ERROR_MARGIN));
+    assertThat(Codecs.toDouble(db.get(key)), isConsideredToBe(1.2d, ERROR_MARGIN));
 
     newValue = kyotoDb.incrementWithDefault(key, -2.0d, 1.0d);
     assertThat(newValue, isConsideredToBe(-0.8d, ERROR_MARGIN));
-    assertThat(FixedPoint.toDouble(db.get(key)), isConsideredToBe(-0.8d, ERROR_MARGIN));
+    assertThat(Codecs.toDouble(db.get(key)), isConsideredToBe(-0.8d, ERROR_MARGIN));
   }
 
   @Test
@@ -258,11 +257,11 @@ public class KyotoDbImplTest {
     byte[] key = "non-existent".getBytes();
     long newValue = kyotoDb.incrementWithDefault(key, 2L, 99L);
     assertThat(newValue, is(101L));
-    assertThat(decodeLong(db.get(key)), is(101L));
+    assertThat(Codecs.toLong(db.get(key)), is(101L));
 
     newValue = kyotoDb.incrementWithDefault(key, -2L, 1L);
     assertThat(newValue, is(99L));
-    assertThat(decodeLong(db.get(key)), is(99L));
+    assertThat(Codecs.toLong(db.get(key)), is(99L));
   }
 
   @Test(expected = KyotoException.class)
@@ -278,10 +277,10 @@ public class KyotoDbImplTest {
   @Test
   public void incrementOkDouble() {
     byte[] key = "non-existent".getBytes();
-    kyotoDb.set(key, FixedPoint.toBytes(-1.843d));
+    kyotoDb.set(key, Codecs.toBytes(-1.843d));
     double newValue = kyotoDb.increment(key, 1.01d);
     assertThat(newValue, isConsideredToBe(-0.833d, ERROR_MARGIN));
-    assertThat(FixedPoint.toDouble(db.get(key)), isConsideredToBe(-0.833d, ERROR_MARGIN));
+    assertThat(Codecs.toDouble(db.get(key)), isConsideredToBe(-0.833d, ERROR_MARGIN));
   }
 
   @Test
@@ -290,7 +289,7 @@ public class KyotoDbImplTest {
     kyotoDb.set(key, 10L);
     long newValue = kyotoDb.increment(key, 1L);
     assertThat(newValue, is(11L));
-    assertThat(decodeLong(db.get(key)), is(11L));
+    assertThat(Codecs.toLong(db.get(key)), is(11L));
   }
 
   @Test
@@ -304,7 +303,7 @@ public class KyotoDbImplTest {
   public void setLong() {
     byte[] key = "non-existent".getBytes();
     kyotoDb.set(key, 10L);
-    assertThat(decodeLong(kyotoDb.get(key)), is(10L));
+    assertThat(Codecs.toLong(kyotoDb.get(key)), is(10L));
   }
 
   @SuppressWarnings("unchecked")
@@ -351,16 +350,62 @@ public class KyotoDbImplTest {
   }
 
   @Test
-  public void x() {
+  public void doubleConversion() {
     kyotoDb.set("doubleValue", 463.94738d);
     kyotoDb.increment("doubleValue", 0.00123d);
     double value = kyotoDb.getDouble("doubleValue");
-    System.out.println(value);
-    System.out.println(463.94738d + 0.00123d);
+    assertThat(value, isConsideredToBe(463.94738d + 0.00123d, ERROR_MARGIN));
   }
 
-  private static Long decodeLong(byte[] bytes) {
-    return ByteBuffer.wrap(bytes).getLong();
+  @Test
+  public void getAndRemoveDoesNotExist() {
+    String value = kyotoDb.getAndRemove("non-existent");
+    assertThat(value, is(nullValue()));
+  }
+
+  @Test
+  public void getAndRemoveDoesOk() {
+    kyotoDb.set("valueToRemove", "myValue");
+    String value = kyotoDb.getAndRemove("valueToRemove");
+    assertThat(value, is("myValue"));
+    assertThat(kyotoDb.get("valueToRemove"), is(nullValue()));
+  }
+
+  @Test
+  public void existsDoesNotExist() {
+    boolean value = kyotoDb.exists("non-existent");
+    assertThat(value, is(false));
+  }
+
+  @Test
+  public void existsDoesExist() {
+    kyotoDb.set("existent", "value");
+    boolean value = kyotoDb.exists("existent");
+    assertThat(value, is(true));
+  }
+
+  @Test
+  public void valueSizeDoesNotExist() {
+    int size = kyotoDb.valueSize("non-existent");
+    assertThat(size, is(-1));
+  }
+
+  @Test
+  public void valueSizeOk() {
+    kyotoDb.set("existent".getBytes(UTF_8), "value".getBytes(UTF_8));
+    int size = kyotoDb.valueSize("existent");
+    assertThat(size, is(5));
+  }
+
+  @Test
+  public void clearOk() {
+    kyotoDb.set("fun", 1);
+    kyotoDb.set("fan", 2);
+    kyotoDb.set("bun", 3);
+    kyotoDb.set("far", 4);
+    assertThat(kyotoDb.recordCount(), is(4L));
+    kyotoDb.clear();
+    assertThat(kyotoDb.recordCount(), is(0L));
   }
 
 }

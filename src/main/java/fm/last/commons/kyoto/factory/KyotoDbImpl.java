@@ -31,8 +31,8 @@ import kyotocabinet.Error;
 import kyotocabinet.FileProcessor;
 import fm.last.commons.kyoto.AccessType;
 import fm.last.commons.kyoto.Atomicity;
+import fm.last.commons.kyoto.Codecs;
 import fm.last.commons.kyoto.DbType;
-import fm.last.commons.kyoto.FixedPoint;
 import fm.last.commons.kyoto.KyotoCursor;
 import fm.last.commons.kyoto.KyotoDb;
 import fm.last.commons.kyoto.KyotoFileProcessor;
@@ -681,12 +681,22 @@ class KyotoDbImpl implements KyotoDb {
 
   @Override
   public double getDouble(byte[] key) {
-    return FixedPoint.toDouble(get(key));
+    return Codecs.toDouble(get(key));
   }
 
   @Override
   public double getDouble(String key) {
-    return FixedPoint.toDouble(get(key.getBytes(encoding)));
+    return Codecs.toDouble(get(key.getBytes(encoding)));
+  }
+
+  @Override
+  public long getLong(byte[] key) {
+    return Codecs.toLong(get(key));
+  }
+
+  @Override
+  public long getLong(String key) {
+    return Codecs.toLong(get(key.getBytes(encoding)));
   }
 
 }

@@ -429,7 +429,7 @@ public interface KyotoDb extends Closeable {
    * @return the double representation of the record's value.
    * @throws KyotoException on failure.
    * @see kyotocabinet.DB#get(byte[])
-   * @see fm.last.commons.kyoto.FixedPoint#toDouble(byte[])
+   * @see fm.last.commons.kyoto.Codecs#toDouble(byte[])
    */
   double getDouble(byte[] key);
 
@@ -440,9 +440,31 @@ public interface KyotoDb extends Closeable {
    * @return the double representation of the record's value.
    * @throws KyotoException on failure.
    * @see kyotocabinet.DB#get(String)
-   * @see fm.last.commons.kyoto.FixedPoint#toDouble(byte[])
+   * @see fm.last.commons.kyoto.Codecs#toDouble(byte[])
    */
   double getDouble(String key);
+
+  /**
+   * Retrieve the long value of a record.
+   * 
+   * @param key the record key.
+   * @return the long representation of the record's value.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#get(bytep[])
+   * @see java.nio#getLong()
+   */
+  long getLong(byte[] key);
+
+  /**
+   * Retrieve the long value of a record.
+   * 
+   * @param key the record key.
+   * @return the long representation of the record's value.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#get(String)
+   * @see java.nio#getLong()
+   */
+  long getLong(String key);
 
   /**
    * The underlying database file.

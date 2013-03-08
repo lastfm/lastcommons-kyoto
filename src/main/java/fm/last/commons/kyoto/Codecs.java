@@ -4,11 +4,11 @@ import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
 
 /**
- * Methods for converting kyotocabinet's 16 byte fixed point decimal representation.
+ * Methods for converting kyotocabinet's primitive representations.
  */
-public final class FixedPoint {
+public final class Codecs {
 
-  private FixedPoint() {
+  private Codecs() {
   }
 
   /**
@@ -40,6 +40,10 @@ public final class FixedPoint {
     ByteBuffer bytes = ByteBuffer.allocate(16);
     bytes.asLongBuffer().put(new long[] { (long) integerPart, (long) (fractionalPart * 1000000000000000d) });
     return bytes.array();
+  }
+
+  public static long toLong(byte[] bytes) {
+    return ByteBuffer.wrap(bytes).getLong();
   }
 
 }
