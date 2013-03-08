@@ -87,8 +87,7 @@ or with Apache Commons IO:
           // IllegalArgumentException as file-hash does not
           // support the 'pcom' option.
 ####MapReduce wrapper
-          // A classic word count across the values
-          final SortedMap<String, Integer> wordCounts = new TreeMap(); 
+          // A classic word count across the values 
           JobExecutor executor = KyotoJobExecutorFactory.INSTANCE.newExecutor(kyotoDb);
           executor.execute(new KyotoJob(new Mapper() {
             public void map(byte[] key, byte[] value, Collector collector) {
@@ -103,7 +102,7 @@ or with Apache Commons IO:
               for (byte[] value : values) {
                 count += value[0];
               }
-              wordCounts.put(new String(key), count);
+              // output key and count
             }
           }));
 #Building
