@@ -16,15 +16,22 @@
 package fm.last.commons.kyoto.factory;
 
 import static fm.last.commons.kyoto.IsConsideredToBe.isConsideredToBe;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import kyotocabinet.DB;
 
@@ -45,6 +52,7 @@ import fm.last.commons.test.file.TemporaryFolder;
 @RunWith(MockitoJUnitRunner.class)
 public class KyotoDbImplTest {
 
+  private static final Charset UTF_8 = Charset.forName("UTF-8");
   private static final double ERROR_MARGIN = 0.000000000001d;
   private static final byte[] BYTE_ARRAY_VALUE = new byte[3];
   private static final String STRING_VALUE = "value";
@@ -216,7 +224,7 @@ public class KyotoDbImplTest {
   }
 
   @Test
-  public void incrementWithDefaultNonExistentOk() {
+  public void incrementWithDefaultNonExistentOkDouble() {
     byte[] key = "non-existent".getBytes();
     double newValue = kyotoDb.incrementWithDefault(key, -0.1d, -1838.0908d);
 
@@ -225,7 +233,16 @@ public class KyotoDbImplTest {
   }
 
   @Test
-  public void incrementWithDefaultOk() {
+  public void incrementWithDefaultNonExistentOkLong() {
+    byte[] key = "non-existent".getBytes();
+    long newValue = kyotoDb.incrementWithDefault(key, 1L, 100L);
+
+    assertThat(newValue, is(101L));
+    assertThat(decodeLong(db.get(key)), is(101L));
+  }
+
+  @Test
+  public void incrementWithDefaultOkDouble() {
     byte[] key = "non-existent".getBytes();
     double newValue = kyotoDb.incrementWithDefault(key, 0.1d, 1.1d);
     assertThat(newValue, isConsideredToBe(1.2d, ERROR_MARGIN));
@@ -236,13 +253,30 @@ public class KyotoDbImplTest {
     assertThat(FixedPoint.toDouble(db.get(key)), isConsideredToBe(-0.8d, ERROR_MARGIN));
   }
 
+  @Test
+  public void incrementWithDefaultOkLong() {
+    byte[] key = "non-existent".getBytes();
+    long newValue = kyotoDb.incrementWithDefault(key, 2L, 99L);
+    assertThat(newValue, is(101L));
+    assertThat(decodeLong(db.get(key)), is(101L));
+
+    newValue = kyotoDb.incrementWithDefault(key, -2L, 1L);
+    assertThat(newValue, is(99L));
+    assertThat(decodeLong(db.get(key)), is(99L));
+  }
+
   @Test(expected = KyotoException.class)
-  public void incrementNonExistent() {
-    kyotoDb.increment("non-existent", -1.1);
+  public void incrementNonExistentDouble() {
+    kyotoDb.increment("non-existent".getBytes(), -1.1);
+  }
+
+  @Test(expected = KyotoException.class)
+  public void incrementNonExistentLong() {
+    kyotoDb.increment("non-existent".getBytes(), -1L);
   }
 
   @Test
-  public void incrementOk() {
+  public void incrementOkDouble() {
     byte[] key = "non-existent".getBytes();
     kyotoDb.set(key, FixedPoint.toBytes(-1.843d));
     double newValue = kyotoDb.increment(key, 1.01d);
@@ -251,10 +285,73 @@ public class KyotoDbImplTest {
   }
 
   @Test
+  public void incrementOkLong() {
+    byte[] key = "non-existent".getBytes();
+    kyotoDb.set(key, 10L);
+    long newValue = kyotoDb.increment(key, 1L);
+    assertThat(newValue, is(11L));
+    assertThat(decodeLong(db.get(key)), is(11L));
+  }
+
+  @Test
   public void setDouble() {
     byte[] key = "non-existent".getBytes();
     kyotoDb.set(key, 10.0001d);
     assertThat(kyotoDb.get(key), is(new byte[] { 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 23, 72, 118, -25, -1 }));
+  }
+
+  @Test
+  public void setLong() {
+    byte[] key = "non-existent".getBytes();
+    kyotoDb.set(key, 10L);
+    assertThat(decodeLong(kyotoDb.get(key)), is(10L));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  public void matchKeysByLevenshteinOkNoLimit() {
+    kyotoDb.set("fun", 1); // distance 0
+    kyotoDb.set("fan", 2); // distance 1
+    kyotoDb.set("bun", 3); // distance 1
+    kyotoDb.set("far", 4); // distance 2
+    Set<String> matches = new HashSet<String>(kyotoDb.matchKeysByLevenshtein("fun", 1, UTF_8));
+    assertThat(matches.size(), is(3));
+    assertThat(matches, containsInAnyOrder(equalTo("fun"), equalTo("bun"), equalTo("fan")));
+  }
+
+  @Test
+  public void matchKeysByLevenshteinNoMatchNoLimit() {
+    kyotoDb.set("fun", 1); // distance 0
+    kyotoDb.set("fan", 2); // distance 1
+    kyotoDb.set("bun", 3); // distance 1
+    kyotoDb.set("far", 4); // distance 2
+    Set<String> matches = new HashSet<String>(kyotoDb.matchKeysByLevenshtein("xxx", 1, UTF_8));
+    assertThat(matches.size(), is(0));
+  }
+
+  @Test
+  public void matchKeysByLevenshteinOkLimit() {
+    kyotoDb.set("fun", 1); // distance 0
+    kyotoDb.set("fan", 2); // distance 1
+    kyotoDb.set("bun", 3); // distance 1
+    kyotoDb.set("far", 4); // distance 2
+    Set<String> matches = new HashSet<String>(kyotoDb.matchKeysByLevenshtein("fun", 1, UTF_8, 1L));
+    assertThat(matches.size(), is(1));
+    assertThat(matches, contains(equalTo("fun")));
+  }
+
+  @Test
+  public void matchKeysByLevenshteinNoMatchLimit() {
+    kyotoDb.set("fun", 1); // distance 0
+    kyotoDb.set("fan", 2); // distance 1
+    kyotoDb.set("bun", 3); // distance 1
+    kyotoDb.set("far", 4); // distance 2
+    Set<String> matches = new HashSet<String>(kyotoDb.matchKeysByLevenshtein("xxx", 1, UTF_8, 1L));
+    assertThat(matches.size(), is(0));
+  }
+
+  private static Long decodeLong(byte[] bytes) {
+    return ByteBuffer.wrap(bytes).getLong();
   }
 
 }

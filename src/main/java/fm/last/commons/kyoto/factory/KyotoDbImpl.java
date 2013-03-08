@@ -15,8 +15,8 @@
  */
 package fm.last.commons.kyoto.factory;
 
-import static fm.last.commons.kyoto.factory.IncrementBehaviour.ERROR_ON_KEY_MISS;
 import static fm.last.commons.kyoto.factory.IncrementBehaviour.ALWAYS_SET_VALUE;
+import static fm.last.commons.kyoto.factory.IncrementBehaviour.ERROR_ON_KEY_MISS;
 
 import java.io.File;
 import java.io.IOException;
@@ -341,7 +341,7 @@ class KyotoDbImpl implements KyotoDb {
   @Override
   public void set(String key, long value) {
     checkDbIsOpen();
-    errorHandler.wrapLongCall(delegate.increment(key, value, ERROR_ON_KEY_MISS.asLong()), Long.MIN_VALUE);
+    errorHandler.wrapLongCall(delegate.increment(key, value, ALWAYS_SET_VALUE.asLong()), Long.MIN_VALUE);
   }
 
   @Override
