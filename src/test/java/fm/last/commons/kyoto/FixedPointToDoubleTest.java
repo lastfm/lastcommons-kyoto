@@ -1,6 +1,7 @@
 package fm.last.commons.kyoto;
 
-import static org.junit.Assert.assertEquals;
+import static fm.last.commons.kyoto.IsConsideredToBe.isConsideredToBe;
+import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,7 +13,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class FixedPointTest {
+public class FixedPointToDoubleTest {
   private static final double ERROR_MARGIN = 0.000000000000001d;
 
   private static final byte[] _10_0001 = new byte[] { 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 23, 72, 118, -25, -1 };
@@ -20,8 +21,8 @@ public class FixedPointTest {
   private static final byte[] __1_1 = new byte[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -91, 12, -17, -123, -64, 0 };
   private static final byte[] _1_1 = new byte[] { 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 90, -13, 16, 122, 64, 0 };
 
-  private byte[] bytes;
-  private double expected;
+  private final byte[] bytes;
+  private final double expected;
 
   @Parameters
   public static Collection<Object[]> data() {
@@ -33,7 +34,7 @@ public class FixedPointTest {
     return data;
   }
 
-  public FixedPointTest(double expected, byte[] bytes) {
+  public FixedPointToDoubleTest(double expected, byte[] bytes) {
     this.expected = expected;
     this.bytes = bytes;
   }
@@ -41,6 +42,7 @@ public class FixedPointTest {
   @Test
   public void testFixedPointToDouble() {
     double decodedValue = FixedPoint.toDouble(bytes);
-    assertEquals("Expected to get " + expected, expected, decodedValue, ERROR_MARGIN);
+    assertThat(decodedValue, isConsideredToBe(expected, ERROR_MARGIN));
   }
+
 }

@@ -464,33 +464,33 @@ public interface KyotoDb extends Closeable {
    * @param key the record key.
    * @param delta amount to increment the record value.
    * @return the resulting value after the increment has been applied.
-   * @throws KyotoException on failure.
+   * @throws KyotoException if the record doesn't exist, or on failure.
    * @see kyotocabinet.DB#increment_double(byte[], double, double)
    */
   double increment(byte[] key, double delta);
 
   /**
-   * Increment the record value by a delta, using the delta value as the default value if the key record does not exist.
+   * Set the value of a record. If no record exists with the given key then a new record is created. If the record
+   * already exists then the value is overwritten.
+   * 
+   * @param key the record key.
+   * @param value the value.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#increment_double(byte[], double, double)
+   */
+  void set(byte[] key, double value);
+
+  /**
+   * Increment the record value by a delta, first applying a default value if the key record does not exist.
    * 
    * @param key the record key.
    * @param delta amount to increment the record value or the default value if the record doesn't exist.
+   * @param defaultValue the default value to apply before incrementing if the record doesn't exist.
    * @return the resulting value after the increment has been applied.
    * @throws KyotoException on failure.
    * @see kyotocabinet.DB#increment_double(byte[], double, double)
    */
-  double incrementOrSet(byte[] key, double delta);
-
-  /**
-   * Increment the record value by a delta, using a default value if the key record does not exist.
-   * 
-   * @param key the record key.
-   * @param delta amount to increment the record value if it exists.
-   * @param defaultValue the default value to set if the record doesn't exist.
-   * @return the resulting value after the increment has been applied.
-   * @throws KyotoException on failure.
-   * @see kyotocabinet.DB#increment_double(byte[], double, double)
-   */
-  double incrementOrSetDefault(byte[] key, double delta, double defaultValue);
+  double incrementWithDefault(byte[] key, double delta, double defaultValue);
 
   /**
    * Increment the record value by a delta throwing a {@link KyotoException} if the key record does not exist.
@@ -498,33 +498,33 @@ public interface KyotoDb extends Closeable {
    * @param key the record key.
    * @param delta amount to increment the record value.
    * @return the resulting value after the increment has been applied.
-   * @throws KyotoException on failure.
+   * @throws KyotoException if the record doesn't exist, or on failure.
    * @see kyotocabinet.DB#increment(byte[], long, long)
    */
   long increment(byte[] key, long delta);
 
   /**
-   * Increment the record value by a delta, using the delta value as the default value if the key record does not exist.
+   * Set the value of a record. If no record exists with the given key then a new record is created. If the record
+   * already exists then the value is overwritten.
+   * 
+   * @param key the record key.
+   * @param value the value.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#increment(byte[], long, long)
+   */
+  void set(byte[] key, long value);
+
+  /**
+   * Increment the record value by a delta, first applying a default value if the key record does not exist.
    * 
    * @param key the record key.
    * @param delta amount to increment the record value or the default value if the record doesn't exist.
+   * @param defaultValue the default value to apply before incrementing if the record doesn't exist.
    * @return the resulting value after the increment has been applied.
    * @throws KyotoException on failure.
    * @see kyotocabinet.DB#increment(byte[], long, long)
    */
-  long incrementOrSet(byte[] key, long delta);
-
-  /**
-   * Increment the record value by a delta, using a default value if the key record does not exist.
-   * 
-   * @param key the record key.
-   * @param delta amount to increment the record value if it exists.
-   * @param defaultValue the default value to set if the record doesn't exist.
-   * @return the resulting value after the increment has been applied.
-   * @throws KyotoException on failure.
-   * @see kyotocabinet.DB#increment(byte[], long, long)
-   */
-  long incrementOrSetDefault(byte[] key, long delta, long defaultValue);
+  long incrementWithDefault(byte[] key, long delta, long defaultValue);
 
   /**
    * Increment the record value by a delta throwing a {@link KyotoException} if the key record does not exist.
@@ -532,33 +532,33 @@ public interface KyotoDb extends Closeable {
    * @param key the record key.
    * @param delta amount to increment the record value.
    * @return the resulting value after the increment has been applied.
-   * @throws KyotoException on failure.
+   * @throws KyotoException if the record doesn't exist, or on failure.
    * @see kyotocabinet.DB#increment_double(String, double, double)
    */
   double increment(String key, double delta);
 
   /**
-   * Increment the record value by a delta, using the delta value as the default value if the key record does not exist.
+   * Set the value of a record. If no record exists with the given key then a new record is created. If the record
+   * already exists then the value is overwritten.
+   * 
+   * @param key the record key.
+   * @param value the value.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#increment_double(String, double, double)
+   */
+  void set(String key, double value);
+
+  /**
+   * Increment the record value by a delta, first applying a default value if the key record does not exist.
    * 
    * @param key the record key.
    * @param delta amount to increment the record value or the default value if the record doesn't exist.
+   * @param defaultValue the default value to apply before incrementing if the record doesn't exist.
    * @return the resulting value after the increment has been applied.
    * @throws KyotoException on failure.
    * @see kyotocabinet.DB#increment_double(String, double, double)
    */
-  double incrementOrSet(String key, double delta);
-
-  /**
-   * Increment the record value by a delta, using a default value if the key record does not exist.
-   * 
-   * @param key the record key.
-   * @param delta amount to increment the record value if it exists.
-   * @param defaultValue the default value to set if the record doesn't exist.
-   * @return the resulting value after the increment has been applied.
-   * @throws KyotoException on failure.
-   * @see kyotocabinet.DB#increment_double(String, double, double)
-   */
-  double incrementOrSetDefault(String key, double delta, double defaultValue);
+  double incrementWithDefault(String key, double delta, double defaultValue);
 
   /**
    * Increment the record value by a delta throwing a {@link KyotoException} if the key record does not exist.
@@ -566,33 +566,33 @@ public interface KyotoDb extends Closeable {
    * @param key the record key.
    * @param delta amount to increment the record value.
    * @return the resulting value after the increment has been applied.
-   * @throws KyotoException on failure.
+   * @throws KyotoException if the record doesn't exist, or on failure.
    * @see kyotocabinet.DB#increment(String, long, long)
    */
   long increment(String key, long delta);
 
   /**
-   * Increment the record value by a delta, using the delta value as the default value if the key record does not exist.
+   * Set the value of a record. If no record exists with the given key then a new record is created. If the record
+   * already exists then the value is overwritten.
+   * 
+   * @param key the record key.
+   * @param value the value.
+   * @throws KyotoException on failure.
+   * @see kyotocabinet.DB#increment(String, long, long)
+   */
+  void set(String key, long value);
+
+  /**
+   * Increment the record value by a delta, first applying a default value if the key record does not exist.
    * 
    * @param key the record key.
    * @param delta amount to increment the record value or the default value if the record doesn't exist.
+   * @param defaultValue the default value to apply before incrementing if the record doesn't exist.
    * @return the resulting value after the increment has been applied.
    * @throws KyotoException on failure.
    * @see kyotocabinet.DB#increment(String, long, long)
    */
-  long incrementOrSet(String key, long delta);
-
-  /**
-   * Increment the record value by a delta, using a default value if the key record does not exist.
-   * 
-   * @param key the record key.
-   * @param delta amount to increment the record value if it exists.
-   * @param defaultValue the default value to set if the record doesn't exist.
-   * @return the resulting value after the increment has been applied.
-   * @throws KyotoException on failure.
-   * @see kyotocabinet.DB#increment(String, long, long)
-   */
-  long incrementOrSetDefault(String key, long delta, long defaultValue);
+  long incrementWithDefault(String key, long delta, long defaultValue);
 
   /**
    * Visit all records with a read-only {@link ReadOnlyVisitor}. All records are visited in a single atomic block and

@@ -15,6 +15,7 @@
  */
 package fm.last.commons.kyoto.factory;
 
+import static fm.last.commons.kyoto.IsConsideredToBe.isConsideredToBe;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -44,6 +45,7 @@ import fm.last.commons.test.file.TemporaryFolder;
 @RunWith(MockitoJUnitRunner.class)
 public class KyotoDbImplTest {
 
+  private static final double ERROR_MARGIN = 0.000000000001d;
   private static final byte[] BYTE_ARRAY_VALUE = new byte[3];
   private static final String STRING_VALUE = "value";
 
@@ -214,17 +216,45 @@ public class KyotoDbImplTest {
   }
 
   @Test
-  public void incrementOrSetOk() {
+  public void incrementWithDefaultNonExistentOk() {
     byte[] key = "non-existent".getBytes();
-    double newValue = kyotoDb.incrementOrSet(key, -1838.0908d);
+    double newValue = kyotoDb.incrementWithDefault(key, -0.1d, -1838.0908d);
 
-    assertThat(newValue, is(-1838.0908d));
-    assertThat(FixedPoint.toDouble(db.get(key)), is(-1838.0908d));
+    assertThat(newValue, isConsideredToBe(-1838.1908d, ERROR_MARGIN));
+    assertThat(FixedPoint.toDouble(db.get(key)), isConsideredToBe(-1838.1908d, ERROR_MARGIN));
+  }
+
+  @Test
+  public void incrementWithDefaultOk() {
+    byte[] key = "non-existent".getBytes();
+    double newValue = kyotoDb.incrementWithDefault(key, 0.1d, 1.1d);
+    assertThat(newValue, isConsideredToBe(1.2d, ERROR_MARGIN));
+    assertThat(FixedPoint.toDouble(db.get(key)), isConsideredToBe(1.2d, ERROR_MARGIN));
+
+    newValue = kyotoDb.incrementWithDefault(key, -2.0d, 1.0d);
+    assertThat(newValue, isConsideredToBe(-0.8d, ERROR_MARGIN));
+    assertThat(FixedPoint.toDouble(db.get(key)), isConsideredToBe(-0.8d, ERROR_MARGIN));
   }
 
   @Test(expected = KyotoException.class)
   public void incrementNonExistent() {
     kyotoDb.increment("non-existent", -1.1);
+  }
+
+  @Test
+  public void incrementOk() {
+    byte[] key = "non-existent".getBytes();
+    kyotoDb.set(key, FixedPoint.toBytes(-1.843d));
+    double newValue = kyotoDb.increment(key, 1.01d);
+    assertThat(newValue, isConsideredToBe(-0.833d, ERROR_MARGIN));
+    assertThat(FixedPoint.toDouble(db.get(key)), isConsideredToBe(-0.833d, ERROR_MARGIN));
+  }
+
+  @Test
+  public void setDouble() {
+    byte[] key = "non-existent".getBytes();
+    kyotoDb.set(key, 10.0001d);
+    assertThat(kyotoDb.get(key), is(new byte[] { 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 23, 72, 118, -25, -1 }));
   }
 
 }

@@ -15,8 +15,8 @@
  */
 package fm.last.commons.kyoto.factory;
 
-enum OnKeyMiss {
-  RETURN_ERROR() {
+enum IncrementBehaviour {
+  ERROR_ON_KEY_MISS() {
     @Override
     public long asLong() {
       return Long.MIN_VALUE;
@@ -27,7 +27,7 @@ enum OnKeyMiss {
       return Double.NEGATIVE_INFINITY;
     }
   },
-  USE_DEFAULT() {
+  APPLY_DEFAULT_ON_KEY_MISS() {
     @Override
     public long asLong() {
       throw new IllegalStateException(this + " does not have a long representation.");
@@ -38,7 +38,7 @@ enum OnKeyMiss {
       throw new IllegalStateException(this + " does not have a double representation.");
     }
   },
-  USE_DELTA() {
+  ALWAYS_SET_VALUE() {
     @Override
     public long asLong() {
       return Long.MAX_VALUE;

@@ -15,8 +15,8 @@
  */
 package fm.last.commons.kyoto.factory;
 
-import static fm.last.commons.kyoto.factory.OnKeyMiss.RETURN_ERROR;
-import static fm.last.commons.kyoto.factory.OnKeyMiss.USE_DELTA;
+import static fm.last.commons.kyoto.factory.IncrementBehaviour.ERROR_ON_KEY_MISS;
+import static fm.last.commons.kyoto.factory.IncrementBehaviour.ALWAYS_SET_VALUE;
 
 import java.io.File;
 import java.io.IOException;
@@ -287,71 +287,71 @@ class KyotoDbImpl implements KyotoDb {
   @Override
   public double increment(byte[] key, double delta) {
     checkDbIsOpen();
-    return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta, RETURN_ERROR.asDouble()), Double.NaN);
+    return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta, ERROR_ON_KEY_MISS.asDouble()), Double.NaN);
   }
 
   @Override
   public double increment(String key, double delta) {
     checkDbIsOpen();
-    return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta, RETURN_ERROR.asDouble()), Double.NaN);
+    return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta, ERROR_ON_KEY_MISS.asDouble()), Double.NaN);
   }
 
   @Override
   public long increment(byte[] key, long delta) {
     checkDbIsOpen();
-    return errorHandler.wrapLongCall(delegate.increment(key, delta, RETURN_ERROR.asLong()), Long.MIN_VALUE);
+    return errorHandler.wrapLongCall(delegate.increment(key, delta, ERROR_ON_KEY_MISS.asLong()), Long.MIN_VALUE);
   }
 
   @Override
   public long increment(String key, long delta) {
     checkDbIsOpen();
-    return errorHandler.wrapLongCall(delegate.increment(key, delta, RETURN_ERROR.asLong()), Long.MIN_VALUE);
+    return errorHandler.wrapLongCall(delegate.increment(key, delta, ERROR_ON_KEY_MISS.asLong()), Long.MIN_VALUE);
   }
 
   @Override
-  public double incrementOrSet(byte[] key, double delta) {
+  public void set(byte[] key, double value) {
     checkDbIsOpen();
-    return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta, USE_DELTA.asDouble()), Double.NaN);
+    errorHandler.wrapDoubleCall(delegate.increment_double(key, value, ALWAYS_SET_VALUE.asDouble()), Double.NaN);
   }
 
   @Override
-  public double incrementOrSet(String key, double delta) {
+  public void set(String key, double value) {
     checkDbIsOpen();
-    return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta, USE_DELTA.asDouble()), Double.NaN);
+    errorHandler.wrapDoubleCall(delegate.increment_double(key, value, ALWAYS_SET_VALUE.asDouble()), Double.NaN);
   }
 
   @Override
-  public double incrementOrSetDefault(byte[] key, double delta, double defaultValue) {
-    checkDbIsOpen();
-    return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta, defaultValue), Double.NaN);
-  }
-
-  @Override
-  public double incrementOrSetDefault(String key, double delta, double defaultValue) {
+  public double incrementWithDefault(byte[] key, double delta, double defaultValue) {
     checkDbIsOpen();
     return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta, defaultValue), Double.NaN);
   }
 
   @Override
-  public long incrementOrSet(byte[] key, long delta) {
+  public double incrementWithDefault(String key, double delta, double defaultValue) {
     checkDbIsOpen();
-    return errorHandler.wrapLongCall(delegate.increment(key, delta, USE_DELTA.asLong()), Long.MIN_VALUE);
+    return errorHandler.wrapDoubleCall(delegate.increment_double(key, delta, defaultValue), Double.NaN);
   }
 
   @Override
-  public long incrementOrSet(String key, long delta) {
+  public void set(byte[] key, long value) {
     checkDbIsOpen();
-    return errorHandler.wrapLongCall(delegate.increment(key, delta, RETURN_ERROR.asLong()), Long.MIN_VALUE);
+    errorHandler.wrapLongCall(delegate.increment(key, value, ALWAYS_SET_VALUE.asLong()), Long.MIN_VALUE);
   }
 
   @Override
-  public long incrementOrSetDefault(byte[] key, long delta, long defaultValue) {
+  public void set(String key, long value) {
+    checkDbIsOpen();
+    errorHandler.wrapLongCall(delegate.increment(key, value, ERROR_ON_KEY_MISS.asLong()), Long.MIN_VALUE);
+  }
+
+  @Override
+  public long incrementWithDefault(byte[] key, long delta, long defaultValue) {
     checkDbIsOpen();
     return errorHandler.wrapLongCall(delegate.increment(key, delta, defaultValue), Long.MIN_VALUE);
   }
 
   @Override
-  public long incrementOrSetDefault(String key, long delta, long defaultValue) {
+  public long incrementWithDefault(String key, long delta, long defaultValue) {
     checkDbIsOpen();
     return errorHandler.wrapLongCall(delegate.increment(key, delta, defaultValue), Long.MIN_VALUE);
   }
