@@ -36,7 +36,7 @@ public class WordCountTest {
 
   @Before
   public void setup() throws IOException {
-    File file = temporaryFolder.newFile("KyotoDbImplTest.kch");
+    File file = temporaryFolder.newFile("WordCountTest.kch");
     db = new DB();
     db.open(file.getAbsolutePath(), DB.OCREATE | DB.OWRITER);
     kyotoDb = new KyotoDbImpl(DbType.FILE_HASH, db, file.getAbsolutePath(), EnumSet.of(Mode.CREATE, Mode.READ_WRITE),

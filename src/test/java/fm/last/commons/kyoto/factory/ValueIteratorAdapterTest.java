@@ -1,10 +1,14 @@
 package fm.last.commons.kyoto.factory;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import kyotocabinet.ValueIterator;
@@ -55,6 +59,26 @@ public class ValueIteratorAdapterTest {
     } catch (NoSuchElementException e) {
       // left blank
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  public void asIterable() {
+    when(mockValueIterator.next()).thenReturn(VALUE_1).thenReturn(VALUE_2).thenReturn(VALUE_3).thenReturn(null);
+    ValueIteratorAdapter adapter = new ValueIteratorAdapter(mockValueIterator);
+    List<byte[]> actual = new ArrayList<byte[]>();
+    for (byte[] value : adapter) {
+      actual.add(value);
+    }
+    assertThat(actual.size(), is(3));
+    assertThat(actual, contains(equalTo(VALUE_1), equalTo(VALUE_2), equalTo(VALUE_3)));
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void reuseFails() {
+    ValueIteratorAdapter adapter = new ValueIteratorAdapter(mockValueIterator);
+    adapter.iterator();
+    adapter.iterator();
   }
 
 }
