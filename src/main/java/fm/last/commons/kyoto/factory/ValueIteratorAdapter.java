@@ -24,10 +24,11 @@ import fm.last.commons.kyoto.mapreduce.Reducer;
 /**
  * Converts a {@link ValueIterator} to an {@link Iterator}{@code <byte[]>} for the {@link Reducer}.
  */
-class ValueIteratorAdapter implements Iterator<byte[]> {
+class ValueIteratorAdapter implements Iterable<byte[]>, Iterator<byte[]> {
 
   private final ValueIterator delegate;
   private byte[] nextValue;
+  private volatile boolean iteratorReturned;
 
   ValueIteratorAdapter(ValueIterator delegate) {
     this.delegate = delegate;
@@ -67,6 +68,15 @@ class ValueIteratorAdapter implements Iterator<byte[]> {
   @Override
   public void remove() {
     throw new UnsupportedOperationException("remove() not supported by this Iterator.");
+  }
+
+  @Override
+  public synchronized Iterator<byte[]> iterator() {
+    if (iteratorReturned) {
+      throw new IllegalStateException("You may only create one iterator from this iterable.");
+    }
+    iteratorReturned = true;
+    return this;
   }
 
 }

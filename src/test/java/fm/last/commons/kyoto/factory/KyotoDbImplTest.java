@@ -350,6 +350,15 @@ public class KyotoDbImplTest {
     assertThat(matches.size(), is(0));
   }
 
+  @Test
+  public void x() {
+    kyotoDb.set("doubleValue", 463.94738d);
+    kyotoDb.increment("doubleValue", 0.00123d);
+    double value = kyotoDb.getDouble("doubleValue");
+    System.out.println(value);
+    System.out.println(463.94738d + 0.00123d);
+  }
+
   private static Long decodeLong(byte[] bytes) {
     return ByteBuffer.wrap(bytes).getLong();
   }

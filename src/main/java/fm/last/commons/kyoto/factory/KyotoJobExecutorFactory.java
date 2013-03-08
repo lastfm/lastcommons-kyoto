@@ -19,7 +19,9 @@ import fm.last.commons.kyoto.KyotoDb;
 import fm.last.commons.kyoto.mapreduce.JobExecutor;
 import fm.last.commons.kyoto.mapreduce.JobExecutorFactory;
 
-public class KyotoJobExecutorFactory implements JobExecutorFactory {
+public enum KyotoJobExecutorFactory implements JobExecutorFactory {
+
+  INSTANCE;
 
   @Override
   public JobExecutor newExecutor(KyotoDb database) {

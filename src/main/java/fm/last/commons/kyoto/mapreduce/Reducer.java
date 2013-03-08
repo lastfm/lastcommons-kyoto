@@ -15,8 +15,6 @@
  */
 package fm.last.commons.kyoto.mapreduce;
 
-import java.util.Iterator;
-
 import kyotocabinet.ValueIterator;
 import fm.last.commons.kyoto.KyotoException;
 
@@ -31,6 +29,6 @@ public interface Reducer {
    * @throws KyotoException on failure.
    * @see {@link kyotocabinet.MapReduce#reduce(byte[], ValueIterator)}
    */
-  void reduce(byte[] key, Iterator<byte[]> values);
+  void reduce(byte[] key, Iterable<byte[]> values);
 
 }

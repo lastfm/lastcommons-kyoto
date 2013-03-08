@@ -60,6 +60,14 @@ or with Apache Commons IO:
           } catch (KyotoException e) {
             // You decide what happens next!
           }
+####Return values represent outcomes, not errors
+          boolean recordAlreadyExists = db.putIfAbsent("myKey", "myValue");
+          long removed = db.remove(keys, ATOMIC);
+          long records = db.recordCount() // Never Long.MIN_VALUE, never < 0
+####Conversion from kyoto's 16 byte decimal representation
+          db.set("doubleValue", 463.94738d);
+          db.increment("doubleValue", 0.00123d);
+          double value = db.getDouble("doubleValue"); // value == 463.94861000000003d
 ####Clearer transaction management
           try {
             db.begin(Synchronization.PHYSICAL);
@@ -68,10 +76,6 @@ or with Apache Commons IO:
           } catch (KyotoException e) {
             db.rollback();
           }
-####Return values represent outcomes, not errors
-          boolean recordAlreadyExists = db.putIfAbsent("myKey", "myValue");
-          long removed = db.remove(keys, ATOMIC);
-          long records = db.recordCount() // Never Long.MIN_VALUE, never < 0
 ####Validation of Kyoto database configuration
           File dbFile = FILE_HASH.newFile(parent, "an-existing-db");          
           KyotoDb db = new KyotoDbBuilder(dbFile)
@@ -82,11 +86,30 @@ or with Apache Commons IO:
           // The call to pageComparator() will fail with an
           // IllegalArgumentException as file-hash does not
           // support the 'pcom' option.
+####MapReduce wrapper
+          // A classic word count across the values
+          final SortedMap<String, Integer> wordCounts = new TreeMap(); 
+          JobExecutor executor = KyotoJobExecutorFactory.INSTANCE.newExecutor(kyotoDb);
+          executor.execute(new KyotoJob(new Mapper() {
+            public void map(byte[] key, byte[] value, Collector collector) {
+              String[] words = new String(value).split(" ");
+              for (String word : words) {
+                collector.collect(word.getBytes(), new byte[] { 1 });
+              }
+            }
+          }, new Reducer() {
+            public void reduce(byte[] key, Iterable<byte[]> values) {
+              int count = 0;
+              for (byte[] value : values) {
+                count += value[0];
+              }
+              wordCounts.put(new String(key), count);
+            }
+          }));
 #Building
 This project uses the [Maven](http://maven.apache.org/) build system. See notes in the 'Dependencies' section on building the dependencies.
 
 #Further work
-* Support `kyotocabinet.MapReduce`.
 * Implement a Spring [`PlatformTransactionManager`](http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/transaction/PlatformTransactionManager.html "Spring Framework Javadoc - PlatformTransactionManager") for simple integration with Spring's transaction management framework.
 
 # Contributing
