@@ -157,14 +157,14 @@ enum ErrorType {
     }
   };
 
-  private static Map<Integer, ErrorType> codeToError;
+  private static Map<Integer, ErrorType> errorTypeByCode;
 
   static {
     Map<Integer, ErrorType> build = new HashMap<Integer, ErrorType>();
     for (ErrorType error : ErrorType.values()) {
       build.put(error.code(), error);
     }
-    codeToError = Collections.unmodifiableMap(build);
+    errorTypeByCode = Collections.unmodifiableMap(build);
   }
 
   int code() {
@@ -176,7 +176,7 @@ enum ErrorType {
   }
 
   static ErrorType valueOf(Error error) {
-    return codeToError.get(error.code());
+    return errorTypeByCode.get(error.code());
   }
 
 }

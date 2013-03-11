@@ -23,7 +23,7 @@ public enum Option {
   /** */
   LINEAR('l'),
   /**
-   * Thy key and the value of each record is compressed implicitly when stored in the file. If the value is bigger than
+   * The key and the value of each record is compressed implicitly when stored in the file. If the value is bigger than
    * 1KB or more, compression is effective.
    */
   COMPRESS('c');
