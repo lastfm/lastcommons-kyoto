@@ -9,7 +9,7 @@
 
   <groupId>fm.last.commons</groupId>
   <artifactId>lastcommons-kyoto</artifactId>
-  <version>1.24.0</version>
+  <version>1.24.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>lastcommons-kyoto</name>
   <description>A better Java wrapper around the Kyoto Cabinet library.</description>
