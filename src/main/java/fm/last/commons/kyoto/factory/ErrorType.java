@@ -167,13 +167,9 @@ enum ErrorType {
     errorTypeByCode = Collections.unmodifiableMap(build);
   }
 
-  int code() {
-    throw new AbstractMethodError();
-  }
+  abstract int code();
 
-  Throwable newException(Error error) {
-    throw new AbstractMethodError();
-  }
+  abstract Throwable newException(Error error);
 
   static ErrorType valueOf(Error error) {
     return errorTypeByCode.get(error.code());
