@@ -6,9 +6,9 @@ import java.nio.LongBuffer;
 /**
  * Methods for converting kyotocabinet's primitive representations.
  */
-public final class Codecs {
+public final class Codec {
 
-  private Codecs() {
+  private Codec() {
   }
 
   /**

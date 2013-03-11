@@ -17,11 +17,21 @@ package fm.last.commons.kyoto.factory;
 
 import java.io.File;
 
+import kyotocabinet.MapReduce;
+import kyotocabinet.ValueIterator;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fm.last.commons.kyoto.KyotoDb;
+import fm.last.commons.kyoto.mapreduce.Context;
 import fm.last.commons.kyoto.mapreduce.Job;
 import fm.last.commons.kyoto.mapreduce.Mapper;
 import fm.last.commons.kyoto.mapreduce.Reducer;
 
 public class KyotoJob implements Job {
+
+  private final Logger LOG = LoggerFactory.getLogger(getClass());
 
   private final Mapper mapper;
   private final Reducer reducer;
@@ -32,6 +42,47 @@ public class KyotoJob implements Job {
   public KyotoJob(Mapper mapper, Reducer reducer) {
     this.mapper = mapper;
     this.reducer = reducer;
+  }
+
+  @Override
+  public void executeWith(KyotoDb database) {
+    if (!(database instanceof KyotoDbImpl)) {
+      throw new IllegalArgumentException(database + " must be an instance of " + KyotoDbImpl.class.getSimpleName());
+    }
+    KyotoDbImpl databaseImpl = (KyotoDbImpl) database;
+    final ErrorHandler errorHandler = databaseImpl.getErrorHandler();
+    MapReduce mapDelegate = new MapReduce() {
+      private final Context context = new Context() {
+        @Override
+        public void write(byte[] key, byte[] value) {
+          errorHandler.wrapBooleanCall(emit(key, value));
+        }
+      };
+
+      @Override
+      public boolean map(byte[] key, byte[] value) {
+        try {
+          mapper.map(key, value, context);
+        } catch (Throwable t) {
+          LOG.error("Exception thrown in map invocation.", t);
+          return false;
+        }
+        return true;
+      }
+
+      @Override
+      public boolean reduce(byte[] key, ValueIterator valueIterator) {
+        try {
+          reducer.reduce(key, new ValueIteratorAdapter(valueIterator));
+        } catch (Throwable t) {
+          LOG.error("Exception thrown in reduce invocation.", t);
+          return false;
+        }
+        return true;
+      }
+    };
+    errorHandler.wrapBooleanCall(mapDelegate.execute(databaseImpl.getDelegate(), resolveTemporaryDbFolder(),
+        resolveOptions()));
   }
 
   @Override
@@ -72,6 +123,24 @@ public class KyotoJob implements Job {
   @Override
   public boolean getCompressTemporaryDb() {
     return compressTemporaryDb;
+  }
+
+  private int resolveOptions() {
+    int options = 0;
+    if (!getCompressTemporaryDb()) {
+      options |= MapReduce.XNOCOMP;
+    }
+    if (!getUseLocks()) {
+      options |= MapReduce.XNOLOCK;
+    }
+    return options;
+  }
+
+  private String resolveTemporaryDbFolder() {
+    if (getTemporaryDbFolder() == null) {
+      return null;
+    }
+    return getTemporaryDbFolder().getAbsolutePath();
   }
 
 }

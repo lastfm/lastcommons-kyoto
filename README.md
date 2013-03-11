@@ -88,12 +88,11 @@ or with Apache Commons IO:
           // support the 'pcom' option.
 ####MapReduce wrapper
           // A classic word count across the values 
-          JobExecutor executor = KyotoJobExecutorFactory.INSTANCE.newExecutor(kyotoDb);
-          executor.execute(new KyotoJob(new Mapper() {
-            public void map(byte[] key, byte[] value, Collector collector) {
+          new KyotoJob(new Mapper() {
+            public void map(byte[] key, byte[] value, Context context) {
               String[] words = new String(value).split(" ");
               for (String word : words) {
-                collector.collect(word.getBytes(), new byte[] { 1 });
+                context.write(word.getBytes(), new byte[] { 1 });
               }
             }
           }, new Reducer() {
@@ -104,7 +103,7 @@ or with Apache Commons IO:
               }
               // output key and count
             }
-          }));
+          }).executeWith(db);
 #Building
 This project uses the [Maven](http://maven.apache.org/) build system. See notes in the 'Dependencies' section on building the dependencies.
 

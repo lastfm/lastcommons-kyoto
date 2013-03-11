@@ -15,7 +15,7 @@
  */
 package fm.last.commons.kyoto.factory;
 
-import static fm.last.commons.kyoto.IsConsideredToBe.isConsideredToBe;
+import static fm.last.commons.kyoto.test.IsConsideredToBe.isConsideredToBe;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -41,7 +41,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import fm.last.commons.kyoto.Codecs;
+import fm.last.commons.kyoto.Codec;
 import fm.last.commons.kyoto.DbType;
 import fm.last.commons.kyoto.KyotoDb;
 import fm.last.commons.kyoto.KyotoException;
@@ -228,7 +228,7 @@ public class KyotoDbImplTest {
     double newValue = kyotoDb.incrementWithDefault(key, -0.1d, -1838.0908d);
 
     assertThat(newValue, isConsideredToBe(-1838.1908d, ERROR_MARGIN));
-    assertThat(Codecs.toDouble(db.get(key)), isConsideredToBe(-1838.1908d, ERROR_MARGIN));
+    assertThat(Codec.toDouble(db.get(key)), isConsideredToBe(-1838.1908d, ERROR_MARGIN));
   }
 
   @Test
@@ -237,7 +237,7 @@ public class KyotoDbImplTest {
     long newValue = kyotoDb.incrementWithDefault(key, 1L, 100L);
 
     assertThat(newValue, is(101L));
-    assertThat(Codecs.toLong(db.get(key)), is(101L));
+    assertThat(Codec.toLong(db.get(key)), is(101L));
   }
 
   @Test
@@ -245,11 +245,11 @@ public class KyotoDbImplTest {
     byte[] key = "non-existent".getBytes();
     double newValue = kyotoDb.incrementWithDefault(key, 0.1d, 1.1d);
     assertThat(newValue, isConsideredToBe(1.2d, ERROR_MARGIN));
-    assertThat(Codecs.toDouble(db.get(key)), isConsideredToBe(1.2d, ERROR_MARGIN));
+    assertThat(Codec.toDouble(db.get(key)), isConsideredToBe(1.2d, ERROR_MARGIN));
 
     newValue = kyotoDb.incrementWithDefault(key, -2.0d, 1.0d);
     assertThat(newValue, isConsideredToBe(-0.8d, ERROR_MARGIN));
-    assertThat(Codecs.toDouble(db.get(key)), isConsideredToBe(-0.8d, ERROR_MARGIN));
+    assertThat(Codec.toDouble(db.get(key)), isConsideredToBe(-0.8d, ERROR_MARGIN));
   }
 
   @Test
@@ -257,11 +257,11 @@ public class KyotoDbImplTest {
     byte[] key = "non-existent".getBytes();
     long newValue = kyotoDb.incrementWithDefault(key, 2L, 99L);
     assertThat(newValue, is(101L));
-    assertThat(Codecs.toLong(db.get(key)), is(101L));
+    assertThat(Codec.toLong(db.get(key)), is(101L));
 
     newValue = kyotoDb.incrementWithDefault(key, -2L, 1L);
     assertThat(newValue, is(99L));
-    assertThat(Codecs.toLong(db.get(key)), is(99L));
+    assertThat(Codec.toLong(db.get(key)), is(99L));
   }
 
   @Test(expected = KyotoException.class)
@@ -277,10 +277,10 @@ public class KyotoDbImplTest {
   @Test
   public void incrementOkDouble() {
     byte[] key = "non-existent".getBytes();
-    kyotoDb.set(key, Codecs.toBytes(-1.843d));
+    kyotoDb.set(key, Codec.toBytes(-1.843d));
     double newValue = kyotoDb.increment(key, 1.01d);
     assertThat(newValue, isConsideredToBe(-0.833d, ERROR_MARGIN));
-    assertThat(Codecs.toDouble(db.get(key)), isConsideredToBe(-0.833d, ERROR_MARGIN));
+    assertThat(Codec.toDouble(db.get(key)), isConsideredToBe(-0.833d, ERROR_MARGIN));
   }
 
   @Test
@@ -289,7 +289,7 @@ public class KyotoDbImplTest {
     kyotoDb.set(key, 10L);
     long newValue = kyotoDb.increment(key, 1L);
     assertThat(newValue, is(11L));
-    assertThat(Codecs.toLong(db.get(key)), is(11L));
+    assertThat(Codec.toLong(db.get(key)), is(11L));
   }
 
   @Test
@@ -303,7 +303,7 @@ public class KyotoDbImplTest {
   public void setLong() {
     byte[] key = "non-existent".getBytes();
     kyotoDb.set(key, 10L);
-    assertThat(Codecs.toLong(kyotoDb.get(key)), is(10L));
+    assertThat(Codec.toLong(kyotoDb.get(key)), is(10L));
   }
 
   @SuppressWarnings("unchecked")

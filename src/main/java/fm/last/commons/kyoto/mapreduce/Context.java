@@ -15,16 +15,20 @@
  */
 package fm.last.commons.kyoto.mapreduce;
 
-import fm.last.commons.kyoto.KyotoDb;
+import fm.last.commons.kyoto.KyotoException;
 
-public interface JobExecutorFactory {
+/**
+ * Writes values from a {@link Mapper}.
+ */
+public interface Context {
 
   /**
-   * Creates a new MapReduce {@link JobExecutor} for the given database.
+   * Write a record from the {@link Mapper}.
    * 
-   * @param database The database on which MapReduce jobs will be executed.
-   * @return The executor.
+   * @param key specifies the key.
+   * @param value specifies the value.
+   * @throws KyotoException on failure.
    */
-  JobExecutor newExecutor(KyotoDb database);
+  void write(byte[] key, byte[] value);
 
 }

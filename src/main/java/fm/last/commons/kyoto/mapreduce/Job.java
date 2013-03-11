@@ -17,6 +17,8 @@ package fm.last.commons.kyoto.mapreduce;
 
 import java.io.File;
 
+import fm.last.commons.kyoto.KyotoDb;
+
 public interface Job {
 
   Mapper getMapper();
@@ -34,5 +36,12 @@ public interface Job {
   void setCompressTemporaryDb(boolean compressTemporaryDb);
 
   boolean getCompressTemporaryDb();
+
+  /**
+   * Execute a MapReduce job.
+   * 
+   * @see {@link kyotocabinet.MapReduce#MapReduce#execute(kyotocabinet.DB, String, int)}
+   */
+  void executeWith(KyotoDb db);
 
 }

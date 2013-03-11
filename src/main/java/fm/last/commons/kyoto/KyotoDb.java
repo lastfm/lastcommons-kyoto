@@ -429,7 +429,7 @@ public interface KyotoDb extends Closeable {
    * @return the double representation of the record's value.
    * @throws KyotoException on failure.
    * @see kyotocabinet.DB#get(byte[])
-   * @see fm.last.commons.kyoto.Codecs#toDouble(byte[])
+   * @see fm.last.commons.kyoto.Codec#toDouble(byte[])
    */
   double getDouble(byte[] key);
 
@@ -440,7 +440,7 @@ public interface KyotoDb extends Closeable {
    * @return the double representation of the record's value.
    * @throws KyotoException on failure.
    * @see kyotocabinet.DB#get(String)
-   * @see fm.last.commons.kyoto.Codecs#toDouble(byte[])
+   * @see fm.last.commons.kyoto.Codec#toDouble(byte[])
    */
   double getDouble(String key);
 

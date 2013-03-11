@@ -1,4 +1,4 @@
-package fm.last.commons.kyoto.factory;
+package fm.last.commons.kyoto.mapreduce;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -7,47 +7,37 @@ import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.EnumSet;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import kyotocabinet.DB;
-
+import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import fm.last.commons.kyoto.DbType;
 import fm.last.commons.kyoto.KyotoDb;
-import fm.last.commons.kyoto.mapreduce.Collector;
-import fm.last.commons.kyoto.mapreduce.JobExecutor;
-import fm.last.commons.kyoto.mapreduce.Mapper;
-import fm.last.commons.kyoto.mapreduce.Reducer;
+import fm.last.commons.kyoto.factory.KyotoDbBuilder;
+import fm.last.commons.kyoto.factory.KyotoJob;
+import fm.last.commons.kyoto.factory.Mode;
 import fm.last.commons.test.file.TemporaryFolder;
 
-public class WordCountTest {
+public class MapReduceWordCountTest {
 
   @Rule
   public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-  private DB db;
   private KyotoDb kyotoDb;
 
   @Before
   public void setup() throws IOException {
     File file = temporaryFolder.newFile("WordCountTest.kch");
-    db = new DB();
-    db.open(file.getAbsolutePath(), DB.OCREATE | DB.OWRITER);
-    kyotoDb = new KyotoDbImpl(DbType.FILE_HASH, db, file.getAbsolutePath(), EnumSet.of(Mode.CREATE, Mode.READ_WRITE),
-        file);
+    kyotoDb = new KyotoDbBuilder(file).modes(Mode.CREATE, Mode.READ_WRITE).buildAndOpen();
   }
 
   @After
   public void teardown() {
-    if (db != null) {
-      db.close();
-    }
+    IOUtils.closeQuietly(kyotoDb);
   }
 
   @SuppressWarnings("unchecked")
@@ -57,13 +47,13 @@ public class WordCountTest {
     kyotoDb.set("a", "some words in here");
     kyotoDb.set("b", "words are great");
     kyotoDb.set("c", "some words are great in books");
-    JobExecutor executor = KyotoJobExecutorFactory.INSTANCE.newExecutor(kyotoDb);
-    executor.execute(new KyotoJob(new Mapper() {
+
+    new KyotoJob(new Mapper() {
       @Override
-      public void map(byte[] key, byte[] value, Collector collector) {
+      public void map(byte[] key, byte[] value, Context context) {
         String[] words = new String(value).split(" ");
         for (String word : words) {
-          collector.collect(word.getBytes(), new byte[] { 1 });
+          context.write(word.getBytes(), new byte[] { 1 });
         }
       }
     }, new Reducer() {
@@ -75,7 +65,8 @@ public class WordCountTest {
         }
         wordCounts.put(new String(key), count);
       }
-    }));
+    }).executeWith(kyotoDb);
+
     assertThat(wordCounts.size(), is(7));
     assertThat(
         wordCounts.keySet(),
@@ -84,4 +75,5 @@ public class WordCountTest {
     assertThat(wordCounts.values(),
         contains(equalTo(2), equalTo(1), equalTo(2), equalTo(1), equalTo(2), equalTo(2), equalTo(3)));
   }
+
 }

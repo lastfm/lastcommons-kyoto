@@ -1,6 +1,6 @@
 package fm.last.commons.kyoto;
 
-import static fm.last.commons.kyoto.IsConsideredToBe.isConsideredToBe;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
@@ -13,8 +13,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class CodecsToDoubleTest {
-  private static final double ERROR_MARGIN = 0.000000000000001d;
+public class CodecToBytesTest {
 
   // 10.0001
   private static final byte[] _10_0001 = new byte[] { 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 23, 72, 118, -25, -1 };
@@ -25,28 +24,28 @@ public class CodecsToDoubleTest {
   // 1.1
   private static final byte[] _1_1 = new byte[] { 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 90, -13, 16, 122, 64, 0 };
 
-  private final byte[] bytes;
-  private final double expected;
+  private final byte[] expected;
+  private final double value;
 
   @Parameters
   public static Collection<Object[]> data() {
     List<Object[]> data = new ArrayList<Object[]>();
-    data.add(new Object[] { 10.0001d, _10_0001 });
-    data.add(new Object[] { -1.0d, __1 });
-    data.add(new Object[] { -1.1d, __1_1 });
-    data.add(new Object[] { 1.1d, _1_1 });
+    data.add(new Object[] { _10_0001, 10.0001d });
+    data.add(new Object[] { __1, -1.0d });
+    data.add(new Object[] { __1_1, -1.1d });
+    data.add(new Object[] { _1_1, 1.1d });
     return data;
   }
 
-  public CodecsToDoubleTest(double expected, byte[] bytes) {
+  public CodecToBytesTest(byte[] expected, double value) {
     this.expected = expected;
-    this.bytes = bytes;
+    this.value = value;
   }
 
   @Test
   public void testFixedPointToDouble() {
-    double decodedValue = Codecs.toDouble(bytes);
-    assertThat(decodedValue, isConsideredToBe(expected, ERROR_MARGIN));
+    byte[] bytes = Codec.toBytes(value);
+    assertThat(bytes, is(expected));
   }
 
 }

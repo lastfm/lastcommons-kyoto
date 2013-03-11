@@ -1,4 +1,4 @@
-package fm.last.commons.kyoto;
+package fm.last.commons.kyoto.test;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;

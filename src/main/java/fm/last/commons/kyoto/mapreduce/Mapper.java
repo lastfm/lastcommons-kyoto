@@ -29,6 +29,6 @@ public interface Mapper {
    * @note To avoid deadlock, any explicit database operation must not be performed in this method.
    * @see {@link kyotocabinet.MapReduce#map(byte[], byte[])}
    */
-  void map(byte[] key, byte[] value, Collector collector);
+  void map(byte[] key, byte[] value, Context context);
 
 }
