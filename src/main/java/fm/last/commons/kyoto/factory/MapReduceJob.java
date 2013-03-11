@@ -29,7 +29,7 @@ import fm.last.commons.kyoto.mapreduce.Job;
 import fm.last.commons.kyoto.mapreduce.Mapper;
 import fm.last.commons.kyoto.mapreduce.Reducer;
 
-public class KyotoJob implements Job {
+public class MapReduceJob implements Job {
 
   private final Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -39,7 +39,7 @@ public class KyotoJob implements Job {
   private boolean useLocks;
   private boolean compressTemporaryDb;
 
-  public KyotoJob(Mapper mapper, Reducer reducer) {
+  public MapReduceJob(Mapper mapper, Reducer reducer) {
     this.mapper = mapper;
     this.reducer = reducer;
   }

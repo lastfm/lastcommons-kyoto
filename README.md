@@ -88,7 +88,7 @@ or with Apache Commons IO:
           // support the 'pcom' option.
 ####MapReduce wrapper
           // A classic word count across the values 
-          new KyotoJob(new Mapper() {
+          new MapReduceJob(new Mapper() {
             public void map(byte[] key, byte[] value, Context context) {
               String[] words = new String(value).split(" ");
               for (String word : words) {

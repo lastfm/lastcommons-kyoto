@@ -18,7 +18,7 @@ import org.junit.Test;
 
 import fm.last.commons.kyoto.KyotoDb;
 import fm.last.commons.kyoto.factory.KyotoDbBuilder;
-import fm.last.commons.kyoto.factory.KyotoJob;
+import fm.last.commons.kyoto.factory.MapReduceJob;
 import fm.last.commons.kyoto.factory.Mode;
 import fm.last.commons.test.file.TemporaryFolder;
 
@@ -48,7 +48,7 @@ public class MapReduceWordCountTest {
     kyotoDb.set("b", "words are great");
     kyotoDb.set("c", "some words are great in books");
 
-    new KyotoJob(new Mapper() {
+    new MapReduceJob(new Mapper() {
       @Override
       public void map(byte[] key, byte[] value, Context context) {
         String[] words = new String(value).split(" ");
