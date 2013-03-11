@@ -1,4 +1,4 @@
-TBC
+1.24.0 (2012-03-11)
 - Implemented check, seize, occupy, MapReduce
 - Updated to use kyotocabinet-java-1.24
 - Stricter checks for closed databases.
